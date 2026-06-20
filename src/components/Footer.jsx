@@ -1,168 +1,247 @@
-import Link from "next/link";
+"use client";
+
 import {
-  LogoFacebook,
-  LogoLinkedin,
-  LogoGithub,
-} from "@gravity-ui/icons";
+  Button,
+  Input,
+  Link,
+} from "@heroui/react";
 
+import {
+  PhoneCall,
+  Mail,
+  Clock3,
+  MapPin,
+  Send,
+  ChevronUp,
+  ChevronRight,
+} from "lucide-react";
 
-export default function Footer() {
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaYoutube,
+  FaLinkedinIn,
+} from "react-icons/fa";
+
+import { FaXTwitter } from "react-icons/fa6";
+
+import lexiCart from "../../public/images/lexi-cart.png";
+import Image from "next/image";
+
+const contactItems = [
+  {
+    icon: PhoneCall,
+    label: "Call Us 24/7",
+    value: "+111-111-111",
+  },
+  {
+    icon: Mail,
+    label: "Make a Quote",
+    value: "quote@laxi-cart.com",
+  },
+  {
+    icon: Clock3,
+    label: "Opening Hour",
+    value: "Sunday - Fri: 9 AM - 6 PM",
+  },
+  {
+    icon: MapPin,
+    label: "Location",
+    value: "000 Washington Ave.",
+  },
+];
+
+const supportLinks = [
+  "Store List",
+  "Opening Hours",
+  "Return Policy",
+];
+
+const quickLinks = [
+  "About",
+  "Contact Us",
+  "Privacy Policy",
+];
+
+function FooterTitle({ title }) {
   return (
-    <footer className="border-t border-white/10 bg-black text-white">
-      <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-        {/* TOP SECTION */}
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-          {/* LEFT */}
-          <div className="space-y-6">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-500">
-                <span className="text-xl font-bold text-white">P</span>
-              </div>
+    <div>
+      <h3 className="text-xl font-bold">{title}</h3>
+      <div className="mt-2 h-[2px] w-10 bg-[#5d1bb6]" />
+    </div>
+  );
+}
 
-              <div className="leading-none">
-                <h2 className="text-xl font-bold">Hiring</h2>
-                <h2 className="text-xl font-bold">Loop</h2>
-              </div>
+function FooterLinks({ title, links }) {
+  return (
+    <div>
+      <FooterTitle title={title} />
+
+      <ul className="mt-6 space-y-4">
+        {links.map((link) => (
+          <li key={link}>
+            <Link
+              href="#"
+              className="group flex items-center gap-2 text-white"
+            >
+              <ChevronRight
+                size={14}
+                className="transition-transform group-hover:translate-x-1"
+              />
+              {link}
             </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
-            {/* Description */}
-            <p className="max-w-xs leading-8 text-gray-400">
-              The AI-native career platform. Built for people who take
-              their work seriously.
-            </p>
+const Footer = () => {
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
-            {/* Social Icons */}
-            <div className="flex items-center gap-4 pt-6">
-              <Link
-                href="#"
-                className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 transition hover:bg-violet-600"
-              >
-                <LogoFacebook className="h-5 w-5" />
-              </Link>
+  return (
+    <footer className="relative bg-[#ef0161] text-white">
+      <section className="border-b border-white/10 mx-auto max-w-7xl px-5 lg:px-0">
+        <div className="container mx-auto py-12">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {contactItems.map((item) => {
+              const Icon = item.icon;
 
-              <Link
-                href="#"
-                className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-600 transition hover:bg-violet-500"
-              >
-                <LogoGithub className="h-5 w-5" />
-              </Link>
+              return (
+                <div
+                  key={item.label}
+                  className="flex items-center gap-4"
+                >
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full border border-dashed border-white/40">
+                    <Icon size={22} />
+                  </div>
 
-              <Link
-                href="#"
-                className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 transition hover:bg-violet-600"
-              >
-                <LogoLinkedin className="h-5 w-5" />
-              </Link>
+                  <div>
+                    <p className="text-sm">
+                      {item.label}
+                    </p>
+                    <p className="font-semibold">
+                      {item.value}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <div className="h-px w-full bg-white/20" />
+
+      <section className="mx-auto max-w-7xl px-5 lg:px-0">
+        <div className="container mx-auto py-16">
+          <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <div className="mb-6 flex items-center gap-3">
+                <Link href="/">
+                  <Image src={lexiCart} width={200} height={200} alt="Lexi Cart" />
+                </Link>
+              </div>
+
+              <p className="mb-6 text-sm leading-relaxed">
+                Empowering knowledge through digital library management.
+              </p>
+
+              <div className="flex gap-3">
+                {[FaFacebookF, FaTwitter, FaXTwitter, FaYoutube, FaLinkedinIn].map(
+                  (Icon, index) => (
+                    <Button
+                      key={index}
+                      isIconOnly
+                      variant="bordered"
+                      className="bg-[#5d1bb6] border-white/20 text-white "
+                    >
+                      <Icon size={18} />
+                    </Button>
+                  )
+                )}
+              </div>
+            </div>
+
+            <FooterLinks
+              title="Customer Support"
+              links={supportLinks}
+            />
+
+            <FooterLinks
+              title="Quick Links"
+              links={quickLinks}
+            />
+
+            <div>
+              <FooterTitle title="Newsletter" />
+
+              <p className="mt-6 mb-6 text-sm">
+                Sign up for our weekly newsletter to get
+                the latest updates.
+              </p>
+
+              <div className="flex gap-2">
+                <Input
+                  type="email"
+                  placeholder="Enter Email Address"
+                  variant="bordered"
+                  className="bg-white border-white/20"
+                />
+
+                <Button
+                  isIconOnly
+                  className="bg-[#5d1bb6] text-white"
+                >
+                  <Send size={18} />
+                </Button>
+              </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* PRODUCT */}
-          <div>
-            <h3 className="mb-6 text-lg font-semibold text-violet-500">
-              Product
-            </h3>
+      <div className="h-px w-full bg-white/20" />
 
-            <ul className="space-y-4 text-gray-400">
-              <li>
-                <Link href="/jobs" className="transition hover:text-white">
-                  Job discovery
-                </Link>
-              </li>
+      <section className="relative mx-auto max-w-7xl px-5 lg:px-0">
+        <div className="container mx-auto flex flex-col items-center justify-between gap-4 py-8 md:flex-row">
+          <p className="text-sm">
+            © All Copyright 2026 by{" "}
+            <Link href="/">
+              <Image src={lexiCart} width={100} height={100} alt="Lexi Cart" />
+            </Link>
+          </p>
 
-              <li>
-                <Link href="/worker-ai" className="transition hover:text-white">
-                  Worker AI
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/companies" className="transition hover:text-white">
-                  Companies
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/salary" className="transition hover:text-white">
-                  Salary data
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* NAVIGATION */}
-          <div>
-            <h3 className="mb-6 text-lg font-semibold text-violet-500">
-              Navigations
-            </h3>
-
-            <ul className="space-y-4 text-gray-400">
-              <li>
-                <Link
-                  href="/help-center"
-                  className="transition hover:text-white"
+          <div className="flex gap-3">
+            {["VISA", "MC", "PAYPAL", "AMAZON"].map(
+              (item) => (
+                <div
+                  key={item}
+                  className="rounded-md border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium"
                 >
-                  Help center
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/career-library"
-                  className="transition hover:text-white"
-                >
-                  Career library
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/contact" className="transition hover:text-white">
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* RESOURCES */}
-          <div>
-            <h3 className="mb-6 text-lg font-semibold text-violet-500">
-              Resources
-            </h3>
-
-            <ul className="space-y-4 text-gray-400">
-              <li>
-                <Link
-                  href="/brand-guideline"
-                  className="transition hover:text-white"
-                >
-                  Brand Guideline
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/newsroom" className="transition hover:text-white">
-                  Newsroom
-                </Link>
-              </li>
-            </ul>
+                  {item}
+                </div>
+              )
+            )}
           </div>
         </div>
 
-        {/* BOTTOM */}
-        <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm text-gray-500 md:flex-row">
-          <p>Copyright 2024 — Hire Loop</p>
-
-          <div className="flex items-center gap-6">
-            <Link href="/terms" className="transition hover:text-white">
-              Terms & Policy
-            </Link>
-
-            <Link href="/privacy" className="transition hover:text-white">
-              Privacy Guideline
-            </Link>
-          </div>
-        </div>
-      </div>
+        <Button
+          isIconOnly
+          onPress={scrollToTop}
+          className="absolute right-8 -top-6 bg-[#5d1bb6] text-white shadow-lg"
+        >
+          <ChevronUp size={18} />
+        </Button>
+      </section>
     </footer>
   );
 }
+
+export default Footer;
