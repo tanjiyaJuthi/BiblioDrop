@@ -4,6 +4,10 @@ import { useState } from "react";
 import { Card, Button, Link, TextField, Label, InputGroup, Input } from "@heroui/react";
 import { Eye, EyeSlash, At, ShieldKeyhole } from "@gravity-ui/icons";
 import { signIn } from "@/lib/auth-client";
+import { FcGoogle } from "react-icons/fc";
+import { LayoutGrid } from "lucide-react";
+import { useGoogleAuth } from "@/lib/helper/utils-client";
+import Image from "next/image";
 
 export default function SigninPage() {
     // Form fields
@@ -17,6 +21,8 @@ export default function SigninPage() {
     const [success, setSuccess] = useState("");
 
     const toggleVisibility = () => setIsVisible(!isVisible);
+
+    const { handleGoogleAuth, googleLoading } = useGoogleAuth();
 
     const handleSignin = async (e) => {
         e.preventDefault();
@@ -47,22 +53,73 @@ export default function SigninPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-4">
-            <Card className="w-full max-w-md p-6 shadow-sm border border-zinc-200 dark:border-zinc-800">
-
-                {/* Header Container */}
-                <div className="flex flex-col items-center justify-center gap-1 pb-6 border-b border-zinc-100 dark:border-zinc-800 mb-6 text-center">
-                    <h1 className="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Welcome back</h1>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400">Enter your credentials to access your account</p>
+        <div className="flex min-h-screen items-center justify-center bg-zinc-200 lg:flex bg-cover bg-center"
+            style={{ backgroundImage: "url('/images/signup-bg.png')" }}
+        >
+            <Card className="w-full max-w-md p-6 shadow-sm border border-zinc-200 rounded-xl">
+                <div className="flex justify-center">
+                    <Link href="/">
+                        <Image
+                            src="/images/lexi-cart.png"
+                            alt="Job Portal"
+                            width={200}
+                            height={200}
+                            className="object-contain"
+                        />
+                    </Link>
                 </div>
 
-                {/* Form Body */}
-                <form onSubmit={handleSignin} className="flex flex-col gap-5">
+                <div className="space-y-6">
+                    <div>
+                        <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-stone-900 mb-1 mt-9">
+                            Welcome Back!
+                        </h2>
+                        <div className="text-sm text-zinc-600">
+                        New to LexiCart?{" "}
+                            <Link href="/signup" className="font-medium cursor-pointer text-sm text-[#f10262]">
+                                Signup
+                            </Link>
+                        </div>
+                    </div>
 
-                    {/* Email Field */}
+                    <div className="space-y-1">
+                        <Button
+                            onClick={handleGoogleAuth}
+                            disabled={googleLoading}
+                            type="button"
+                            variant="outline"
+                            className="w-full h-9.5 rounded-xl border-stone-200 bg-white hover:bg-white text-stone-900 font-semibold relative overflow-hidden group"
+                        >
+                            <span className="relative z-10 flex items-center justify-center gap-2">
+                                {googleLoading ? (
+                                "Redirecting to Google..."
+                                ) : (
+                                <>
+                                    <FcGoogle className="text-lg" />
+                                    Login with Google
+                                </>
+                                )}
+                            </span>
+
+                            <span className="absolute inset-0 bg-stone-100 translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out" />
+                        </Button>
+                    </div>
+                </div>
+
+                <div className="relative flex items-center">
+                    <div className="flex-1 border-t border-stone-200"></div>
+
+                    <span className="px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-400">
+                    Or continue with email
+                    </span>
+
+                    <div className="flex-1 border-t border-stone-200"></div>
+                </div>
+
+                <form onSubmit={handleSignin} className="flex flex-col gap-5">
                     <TextField isRequired name="email" type="email" className="flex flex-col gap-1.5">
                         <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email Address</Label>
-                        <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900 focus-within:border-primary transition-colors">
+                        <InputGroup className="flex items-center gap-2 border border-zinc-200 rounded-xl px-3 bg-zinc-50 focus-within:border-primary transition-colors">
                             <At className="text-zinc-400 pointer-events-none" size={16} />
                             <Input
                                 placeholder="you@example.com"
@@ -96,7 +153,6 @@ export default function SigninPage() {
                         </InputGroup>
                     </TextField>
 
-                    {/* Dynamic Status Badges */}
                     {error && (
                         <div className="p-3.5 text-xs font-medium rounded-xl bg-red-100/60 dark:bg-red-950/50 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900">
                             <span className="font-semibold">Error:</span> {error}
@@ -113,17 +169,19 @@ export default function SigninPage() {
                     <Button
                         type="submit"
                         color="primary"
-                        className="w-full font-semibold rounded-xl text-sm h-12"
+                        className="relative overflow-hidden w-full font-semibold rounded-xl text-sm bg-[#f10262] h-9.5 group"
                         isLoading={isLoading}
                         isDisabled={isLoading}
                     >
-                        Sign In
+                        <span className="relative z-10">Sign In</span>
+
+                        <span className="absolute inset-0 rounded-xl bg-[#5d1bb6] translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></span>  
                     </Button>
 
                     {/* Navigation Option */}
                     <div className="text-center pt-4 border-t border-zinc-100 dark:border-zinc-800 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                        New to HireLoop?{" "}
-                        <Link href="/auth/signup" className="font-medium cursor-pointer text-sm text-blue-600 dark:text-blue-400">
+                        New to LexiCart?{" "}
+                        <Link href="/signup" className="font-medium cursor-pointer text-sm text-[#f10262]">
                             Create an account
                         </Link>
                     </div>

@@ -70,15 +70,17 @@ export default function Navbar() {
                     className="text-sm font-medium text-[#ef0161] transition hover:text-[#5d1bb6]"
                   >
                     Sign In
-                  </Link>}
-              <Button
-                as={Link}
-                href="/signup"
-                radius="lg"
-                className="py-3 bg-[#ef0161] px-6 text-sm font-semibold text-white rounded-xl hover:bg-[#5d1bb6]"
-              >
-                Get Started
-              </Button>
+                  </Link>
+                }
+                <Link
+                  href="/signup"
+                  radius="lg"
+                  className="relative overflow-hidden py-3 px-6 text-sm font-semibold text-white rounded-xl bg-[#ef0161] group"
+                >
+                  <span className="relative z-10">Get Started</span>
+
+                  <span className="absolute inset-0 rounded-xl bg-[#5d1bb6] translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></span>
+                </Link>
             </div>
           </div>
 

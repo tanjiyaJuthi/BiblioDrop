@@ -160,9 +160,13 @@ const Footer = () => {
                       key={index}
                       isIconOnly
                       variant="bordered"
-                      className="bg-[#5d1bb6] border-white/20 text-white "
+                      className="relative overflow-hidden group bg-[#5d1bb6] border-white/20 text-white"
                     >
-                      <Icon size={18} />
+                      <span className="absolute inset-0 bg-white translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></span>
+
+                      <span className="relative z-10 group-hover:text-[#5d1bb6] transition-colors duration-500">
+                        <Icon size={18} />
+                      </span>
                     </Button>
                   )
                 )}
