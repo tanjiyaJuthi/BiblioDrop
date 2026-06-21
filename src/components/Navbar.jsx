@@ -6,8 +6,11 @@ import { Button } from "@heroui/react";
 import { useSession, signOut } from "@/lib/auth-client";
 import Image from "next/image";
 import lexiCart from "../../public/images/lexi-cart.png";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session } = useSession();
 
@@ -19,17 +22,17 @@ export default function Navbar() {
 
   const navLinks = [
     {
-      label: "Browse Jobs",
-      href: "/jobs",
+      label: "Home",
+      href: "/",
     },
     {
-      label: "Companies",
-      href: "/companies",
+      label: "Browse Books",
+      href: "/books",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
-    },
+      label: "Contact Us",
+      href: "/contact",
+    }
   ];
 
   return (
@@ -42,16 +45,27 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <div className="hidden items-center gap-6 md:flex">
             <ul className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-3 py-2">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="rounded-full px-4 py-2 text-sm font-medium transition hover:bg-white/10 hover:text-[#ef0161]"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {navLinks.map((link) => {
+                const isActive =
+                  link.href === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(link.href);
+
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                        isActive
+                          ? "text-[#ef0161]"
+                          : "hover:text-[#ef0161]"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
 
             <div className="h-6 w-px bg-white/20" />
@@ -141,17 +155,28 @@ export default function Navbar() {
         <div className="border-t border-white/10 md:hidden">
           <div className="space-y-3 px-4 py-6">
             <ul className="space-y-2">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="block rounded-xl px-4 py-3 text-base font-medium text-gray-300 transition hover:bg-white/5 hover:text-white"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {navLinks.map((link) => {
+                const isActive =
+                  link.href === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(link.href);
+
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={`block rounded-xl px-4 h-9.5 text-base font-medium transition ${
+                        isActive
+                          ? "bg-[#ef0161] text-white"
+                          : "text-gray-700 hover:bg-[#ef0161]/10 hover:text-[#ef0161]"
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
 
             <div className="border-t border-white/10 pt-4">
