@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Button } from "@heroui/react";
+import { Avatar, Button, Dropdown, Label } from "@heroui/react";
 import { useSession, signOut } from "@/lib/auth-client";
 import Image from "next/image";
 import lexiCart from "../../public/images/lexi-cart.png";
 import { usePathname } from "next/navigation";
+import { MdDashboard } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
+import { BiLogOut } from "react-icons/bi";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -36,7 +39,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white">
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-50">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-0">
         <Link href="/" className="flex items-center gap-3">
             <Image src={lexiCart} width={200} height={200} alt="BibliDrop"/>
@@ -44,7 +47,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-4">
           <div className="hidden items-center gap-6 md:flex">
-            <ul className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-3 py-2">
+            <ul className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
               {navLinks.map((link) => {
                 const isActive =
                   link.href === "/"
@@ -55,7 +58,7 @@ export default function Navbar() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                      className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
                         isActive
                           ? "text-[#ef0161]"
                           : "hover:text-[#ef0161]"
@@ -71,22 +74,8 @@ export default function Navbar() {
             <div className="h-6 w-px bg-white/20" />
 
             <div className="flex items-center gap-4">
-              {user ? (
-                <>
-                  <span className="text-sm font-medium">
-                    Hi, {user.name}!
-                  </span>
-
-                  <Button
-                    onClick={handleSignOut}
-                    className="rounded-2xl"
-                    variant="ghost"
-                  >
-                    Sign Out
-                  </Button>
-                </>
-              ) : (
-                <>
+              {!user && (
+                <div className="hidden items-center gap-4 md:flex">
                   <Link
                     href="/signin"
                     className="text-sm font-medium text-[#ef0161] transition hover:text-[#5d1bb6]"
@@ -106,14 +95,101 @@ export default function Navbar() {
                       className="absolute inset-0 rounded-xl bg-[#5d1bb6] translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out pointer-events-none"
                     />
                   </Link>
-                </>
+                </div>
+              )}
+
+              {user && (
+                <div className="hidden items-center gap-4 md:flex">
+                  <Dropdown>
+                    <Dropdown.Trigger className="rounded-xl">
+                      <Avatar size="sm" aria-label="Menu">
+                        <Avatar.Image
+                          referrerPolicy="no-referrer"
+                          alt={user?.name}
+                          src={user?.image || "/images/fallback.jpg"}
+                        />
+                        <Avatar.Fallback>
+                          {user.name.charAt(0)}
+                        </Avatar.Fallback>
+                      </Avatar>
+                    </Dropdown.Trigger>
+
+                    <Dropdown.Popover className="rounded-xl overflow-hidden shadow-lg mt-5 mr-5">
+                      <div className="px-3 pt-3 pb-1">
+                        <div className="flex items-center gap-2">
+                          <Avatar size="sm">
+                            <Avatar.Image
+                              alt={user?.name}
+                              src={user?.image}
+                            />
+                            <Avatar.Fallback delayMs={600}>
+                              {user.name.charAt(0)}
+                            </Avatar.Fallback>
+                          </Avatar>
+
+                          <div className="flex flex-col gap-0">
+                            <p className="text-sm leading-5 font-medium">
+                              {user?.name}
+                            </p>
+
+                            <p className="text-xs leading-none text-muted">
+                              {user?.email}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <Dropdown.Menu
+                        className="p-1"
+                        onAction={(key) => console.log(`Selected: ${key}`)}
+                      >
+                        <Dropdown.Item
+                          id="new-file"
+                          textValue="New file"
+                          className="
+                            rounded-xl
+                            hover:bg-[#f10262]/10
+                          "
+                        >
+                          <Link
+                            className="flex items-center gap-2 rounded-xl w-full"
+                            href={`/dashboard/${user?.role}`}
+                          >
+                            <MdDashboard />
+                            <Label className="hover:text-white">
+                              Dashboard
+                            </Label>
+                          </Link>
+                        </Dropdown.Item>
+
+
+                        <Dropdown.Item
+                          id="delete-file"
+                          textValue="Delete file"
+                          variant="danger"
+                          onClick={handleSignOut}
+                          className="
+                            rounded-xl
+                            hover:bg-[#f10262]/10
+                          "
+                        >
+                          <BiLogOut />
+                          <Label className="hover:text-white">
+                            SignOut
+                          </Label>
+                        </Dropdown.Item>
+
+                      </Dropdown.Menu>
+                    </Dropdown.Popover>
+                  </Dropdown>
+                </div>
               )}
             </div>
           </div>
 
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center justify-center rounded-lg p-2 transition md:hidden"
+            className="flex items-center justify-center rounded-2xl p-2 transition md:hidden"
             aria-label="Toggle Menu"
           >
             {isMenuOpen ? (
@@ -153,7 +229,9 @@ export default function Navbar() {
 
       {isMenuOpen && (
         <div className="border-t border-black/5 md:hidden">
-          <div className="space-y-3 px-4 py-6">
+          <div className="space-y-5 px-5 py-6">
+
+            {/* Navigation */}
             <ul className="space-y-2">
               {navLinks.map((link) => {
                 const isActive =
@@ -165,12 +243,12 @@ export default function Navbar() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className={`block rounded-xl px-4 h-9.5 text-base font-medium transition ${
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`block rounded-xl px-4 py-2 text-base font-medium transition ${
                         isActive
                           ? "text-[#ef0161]"
                           : "hover:text-[#ef0161]"
                       }`}
-                      onClick={() => setIsMenuOpen(false)}
                     >
                       {link.label}
                     </Link>
@@ -179,26 +257,118 @@ export default function Navbar() {
               })}
             </ul>
 
-            <div className="ml-5 font-semibold">
-              <div className="flex flex-col gap-5">
+
+            {/* Logged In User */}
+            {user ? (
+              <div className="border-t pt-5 space-y-4">
+
+                <div className="flex items-center gap-3 px-2">
+                  <Avatar size="sm">
+                    <Avatar.Image
+                      referrerPolicy="no-referrer"
+                      alt={user.name}
+                      src={user.image || "/images/fallback.jpg"}
+                    />
+
+                    <Avatar.Fallback>
+                      {user.name.charAt(0)}
+                    </Avatar.Fallback>
+                  </Avatar>
+
+
+                  <div>
+                    <p className="text-sm font-semibold">
+                      {user.name}
+                    </p>
+
+                    <p className="text-xs text-zinc-500">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+
+
+                <Link
+                  href={`/dashboard/${user.role}`}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="
+                    flex items-center gap-2
+                    rounded-xl
+                    px-4 py-2
+                    text-sm
+                    hover:bg-[#f10262]/10
+                    hover:text-[#f10262]
+                    transition
+                  "
+                >
+                  <MdDashboard size={18}/>
+                  Dashboard
+                </Link>
+
+
+                <button
+                  onClick={handleSignOut}
+                  className="
+                    flex items-center gap-2
+                    rounded-xl
+                    px-4 py-2
+                    text-sm
+                    w-full
+                    text-left
+                    hover:bg-[#f10262]/10
+                    hover:text-[#f10262]
+                    transition
+                  "
+                >
+                  <BiLogOut size={18}/>
+                  Sign Out
+                </button>
+
+              </div>
+            ) : (
+
+              /* Guest User */
+              <div className="border-t pt-5 flex flex-col gap-4">
+
                 <Link
                   href="/signin"
-                  className="hover:text-[#ef0161] inline-block"
                   onClick={() => setIsMenuOpen(false)}
+                  className="
+                    px-4
+                    text-sm
+                    font-medium
+                    text-[#ef0161]
+                    hover:text-[#5d1bb6]
+                  "
                 >
                   Sign In
                 </Link>
 
+
                 <Link
-                    href="/signup"
-                    className="hover:text-[#ef0161] inline-block"
+                  href="/signup"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="
+                    mx-4
+                    flex
+                    justify-center
+                    items-center
+                    h-10
+                    rounded-xl
+                    bg-[#ef0161]
+                    text-white
+                    text-sm
+                    font-semibold
+                    hover:bg-[#5d1bb6]
+                    transition
+                  "
                 >
-                  <span className="relative z-10">
-                    Get Started
-                  </span>
+                  Get Started
                 </Link>
+
               </div>
-            </div>
+            )}
+
           </div>
         </div>
       )}
