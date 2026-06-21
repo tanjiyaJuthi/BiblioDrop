@@ -57,30 +57,43 @@ export default function Navbar() {
             <div className="h-6 w-px bg-white/20" />
 
             <div className="flex items-center gap-4">
-              {
-                user ?
-                  <>
+              {user ? (
+                <>
+                  <span className="text-sm font-medium">
                     Hi, {user.name}!
-                    <Button onClick={handleSignOut}
-                      variant="ghost">Sign Out</Button>
-                  </>
-                  :
+                  </span>
+
+                  <Button
+                    onClick={handleSignOut}
+                    className="rounded-2xl"
+                    variant="ghost"
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
                   <Link
                     href="/signin"
                     className="text-sm font-medium text-[#ef0161] transition hover:text-[#5d1bb6]"
                   >
                     Sign In
                   </Link>
-                }
-                <Link
-                  href="/signup"
-                  radius="lg"
-                  className="relative overflow-hidden py-3 px-6 text-sm font-semibold text-white rounded-xl bg-[#ef0161] group"
-                >
-                  <span className="relative z-10">Get Started</span>
 
-                  <span className="absolute inset-0 rounded-xl bg-[#5d1bb6] translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></span>
-                </Link>
+                  <Link
+                    href="/signup"
+                    className="relative overflow-hidden h-9.5 px-6 text-sm font-semibold text-white rounded-xl bg-[#ef0161] group flex items-center"
+                  >
+                    <span className="relative z-10">
+                      Get Started
+                    </span>
+
+                    <span
+                      className="absolute inset-0 rounded-xl bg-[#5d1bb6] translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out pointer-events-none"
+                    />
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 

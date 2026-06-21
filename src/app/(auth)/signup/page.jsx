@@ -28,7 +28,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [image, setImage] = useState("");
-  const [role, setRole] = useState("seeker");
+  const [role, setRole] = useState("");
 
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,6 +64,8 @@ export default function SignupPage() {
         setName("");
         setEmail("");
         setPassword("");
+        setImage("");
+        setRole("");
 
         router.push("/signin");
       }
@@ -169,7 +171,7 @@ export default function SignupPage() {
           <div className="mb-5">
             <Button
                 onClick={handleGoogleAuth}
-                disabled={googleLoading}
+                disabled={!role || googleLoading}
                 type="button"
                 variant="outline"
                 className="w-full h-9.5 rounded-xl border-stone-200 bg-white hover:bg-white text-stone-900 font-semibold relative overflow-hidden group"
@@ -293,13 +295,14 @@ export default function SignupPage() {
             <div className="flex flex-col gap-4">
               <Label>Subscription plan</Label>
               <RadioGroup
-                defaultValue="seeker"
+                defaultValue="reader"
+                value={role}
                 name="role"
                 onChange={(value) => setRole(value)}
                 orientation="horizontal"
                 className="flex gap-6"
               >
-                <Radio value="seeker" className="flex items-center gap-2">
+                <Radio value="reader" className="flex items-center gap-2">
                   <Radio.Control className="text-[#f10262]">
                     <Radio.Indicator className="bg-[#f10262]" />
                   </Radio.Control>
@@ -309,7 +312,7 @@ export default function SignupPage() {
                   </Radio.Content>
                 </Radio>
 
-                <Radio value="recruiter" className="flex items-center gap-2">
+                <Radio value="librarian" className="flex items-center gap-2">
                   <Radio.Control className="text-[#f10262]">
                     <Radio.Indicator className="bg-[#f10262]" />
                   </Radio.Control>

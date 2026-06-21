@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from "react";
 import { authClient } from "../auth-client";
@@ -8,15 +8,21 @@ export const useGoogleAuth = () => {
 
   const handleGoogleAuth = async () => {
     setGoogleLoading(true);
+
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: `/`,
       });
+    } catch (error) {
+      console.error(error);
     } finally {
       setGoogleLoading(false);
     }
   };
 
-  return { handleGoogleAuth, googleLoading };
+  return {
+    handleGoogleAuth,
+    googleLoading,
+  };
 };
