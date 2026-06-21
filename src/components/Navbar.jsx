@@ -113,7 +113,7 @@ export default function Navbar() {
 
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center justify-center rounded-lg p-2 text-white transition hover:bg-white/10 md:hidden"
+            className="flex items-center justify-center rounded-lg p-2 transition md:hidden"
             aria-label="Toggle Menu"
           >
             {isMenuOpen ? (
@@ -152,7 +152,7 @@ export default function Navbar() {
       </div>
 
       {isMenuOpen && (
-        <div className="border-t border-white/10 md:hidden">
+        <div className="border-t border-black/5 md:hidden">
           <div className="space-y-3 px-4 py-6">
             <ul className="space-y-2">
               {navLinks.map((link) => {
@@ -167,8 +167,8 @@ export default function Navbar() {
                       href={link.href}
                       className={`block rounded-xl px-4 h-9.5 text-base font-medium transition ${
                         isActive
-                          ? "bg-[#ef0161] text-white"
-                          : "text-gray-700 hover:bg-[#ef0161]/10 hover:text-[#ef0161]"
+                          ? "text-[#ef0161]"
+                          : "hover:text-[#ef0161]"
                       }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -179,24 +179,24 @@ export default function Navbar() {
               })}
             </ul>
 
-            <div className="border-t border-white/10 pt-4">
-              <div className="flex flex-col gap-3">
+            <div className="ml-5 font-semibold">
+              <div className="flex flex-col gap-5">
                 <Link
-                  href="/login"
-                  className="rounded-xl px-4 py-3 text-base font-medium text-violet-400 transition hover:bg-white/5"
+                  href="/signin"
+                  className="hover:text-[#ef0161] inline-block"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign In
                 </Link>
 
-                <Button
-                  as={Link}
-                  href="/register"
-                  className="bg-white font-semibold text-black"
-                  radius="lg"
+                <Link
+                    href="/signup"
+                    className="hover:text-[#ef0161] inline-block"
                 >
-                  Get Started
-                </Button>
+                  <span className="relative z-10">
+                    Get Started
+                  </span>
+                </Link>
               </div>
             </div>
           </div>

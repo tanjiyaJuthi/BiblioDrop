@@ -12,7 +12,7 @@ export const useGoogleAuth = () => {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: `/`,
+        callbackURL: `/choose-role`,
       });
     } catch (error) {
       console.error(error);

@@ -6,36 +6,40 @@ import {
   InputGroup,
   Label,
   Link,
-  Radio,
-  RadioGroup,
   TextField,
 } from "@heroui/react";
+
 import { useState } from "react";
 
 import { signUp } from "@/lib/auth-client";
+
 import { At, Eye, EyeSlash, Person, ShieldKeyhole } from "@gravity-ui/icons";
+
 import Image from "next/image";
 
-import { BarChart3, Briefcase, Users } from "lucide-react";
 import { useGoogleAuth } from "@/lib/helper/utils-client";
-import { FcGoogle } from "react-icons/fc";
+import { BarChart3, Briefcase, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { FcGoogle } from "react-icons/fc";
 
 export default function SignupPage() {
   const router = useRouter();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [image, setImage] = useState("");
-  const [role, setRole] = useState("");
 
-  const [isVisible, setIsVisible] = useState(false);
+  const [image, setImage] = useState("");
+
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  const toggleVisibility = () => setIsVisible(!isVisible);
 
   const { handleGoogleAuth, googleLoading } = useGoogleAuth();
 
@@ -44,6 +48,12 @@ export default function SignupPage() {
 
     setError("");
     setSuccess("");
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -52,8 +62,7 @@ export default function SignupPage() {
         password,
         name,
         image,
-        role,
-        callbackURL: "/",
+        callbackURL: "/choose-role",
       });
 
       if (authError) {
@@ -64,10 +73,10 @@ export default function SignupPage() {
         setName("");
         setEmail("");
         setPassword("");
+        setConfirmPassword("");
         setImage("");
-        setRole("");
 
-        router.push("/signin");
+        router.push("/choose-role");
       }
     } catch (err) {
       setError("An unexpected network error occurred.");
@@ -110,7 +119,7 @@ export default function SignupPage() {
             <Link href="/">
               <Image
                 src="/images/lexi-cart.png"
-                alt="Job Portal"
+                alt="Lexi Cart"
                 width={250}
                 height={250}
                 className="object-contain"
@@ -168,30 +177,30 @@ export default function SignupPage() {
             </p>
           </header>
 
-          <div className="mb-5">
+          <div className="mb-3">
             <Button
-                onClick={handleGoogleAuth}
-                disabled={!role || googleLoading}
-                type="button"
-                variant="outline"
-                className="w-full h-9.5 rounded-xl border-stone-200 bg-white hover:bg-white text-stone-900 font-semibold relative overflow-hidden group"
+              onClick={handleGoogleAuth}
+              disabled={googleLoading}
+              type="button"
+              variant="outline"
+              className="w-full h-9.5 rounded-xl border-stone-200 bg-white hover:bg-white text-stone-900 font-semibold relative overflow-hidden group"
             >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                    {googleLoading ? (
-                    "Redirecting to Google..."
-                    ) : (
-                    <>
-                        <FcGoogle className="text-lg" />
-                        Continue with Google
-                    </>
-                    )}
-                </span>
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                {googleLoading ? (
+                  "Redirecting to Google..."
+                ) : (
+                  <>
+                    <FcGoogle className="text-lg" />
+                    Continue with Google
+                  </>
+                )}
+              </span>
 
-                <span className="absolute inset-0 bg-stone-100 translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out" />
+              <span className="absolute inset-0 bg-stone-100 translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out" />
             </Button>
           </div>
 
-          <div className="relative flex items-center mb-8 ">
+          <div className="relative flex items-center mb-2 ">
             <div className="flex-1 border-t border-stone-200"></div>
 
             <span className="px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-400">
@@ -241,36 +250,83 @@ export default function SignupPage() {
               </InputGroup>
             </TextField>
 
-            <TextField
-              isRequired
-              name="password"
-              className="flex flex-col gap-1.5"
-            >
-              <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Password
-              </Label>
-              <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900 focus-within:border-primary transition-colors">
-                <ShieldKeyhole
-                  className="text-zinc-400 pointer-events-none"
-                  size={16}
-                />
-                <Input
-                  type={isVisible ? "text" : "password"}
-                  placeholder="Choose a password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-transparent py-2 text-sm outline-none border-none text-zinc-900 dark:text-zinc-100"
-                />
-                <button
-                  className="focus:outline-none text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition"
-                  type="button"
-                  onClick={toggleVisibility}
-                  aria-label="toggle password visibility"
-                >
-                  {isVisible ? <EyeSlash size={18} /> : <Eye size={18} />}
-                </button>
-              </InputGroup>
-            </TextField>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <TextField
+                isRequired
+                name="password"
+                className="flex flex-col gap-1.5"
+              >
+                <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Password
+                </Label>
+
+                <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900 focus-within:border-primary transition-colors">
+                  <ShieldKeyhole
+                    className="text-zinc-400 pointer-events-none"
+                    size={16}
+                  />
+
+                  <Input
+                    type={isPasswordVisible ? "text" : "password"}
+                    placeholder="Choose a password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-transparent py-2 text-sm outline-none border-none text-zinc-900 dark:text-zinc-100"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                    className="focus:outline-none text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition"
+                  >
+                    {isPasswordVisible ? (
+                      <EyeSlash size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                </InputGroup>
+              </TextField>
+
+              <TextField
+                isRequired
+                name="confirmPassword"
+                className="flex flex-col gap-1.5"
+              >
+                <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Confirm Password
+                </Label>
+
+                <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900 focus-within:border-primary transition-colors">
+                  <ShieldKeyhole
+                    className="text-zinc-400 pointer-events-none"
+                    size={16}
+                  />
+
+                  <Input
+                    type={isConfirmPasswordVisible ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full bg-transparent py-2 text-sm outline-none border-none text-zinc-900 dark:text-zinc:100"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
+                    }
+                    className="focus:outline-none text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition"
+                  >
+                    {isConfirmPasswordVisible ? (
+                      <EyeSlash size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                </InputGroup>
+              </TextField>
+            </div>
 
             <TextField
               isRequired
@@ -291,38 +347,6 @@ export default function SignupPage() {
                 />
               </InputGroup>
             </TextField>
-
-            <div className="flex flex-col gap-4">
-              <Label>Subscription plan</Label>
-              <RadioGroup
-                defaultValue="reader"
-                value={role}
-                name="role"
-                onChange={(value) => setRole(value)}
-                orientation="horizontal"
-                className="flex gap-6"
-              >
-                <Radio value="reader" className="flex items-center gap-2">
-                  <Radio.Control className="text-[#f10262]">
-                    <Radio.Indicator className="bg-[#f10262]" />
-                  </Radio.Control>
-
-                  <Radio.Content>
-                    <Label className="cursor-pointer">Reader</Label>
-                  </Radio.Content>
-                </Radio>
-
-                <Radio value="librarian" className="flex items-center gap-2">
-                  <Radio.Control className="text-[#f10262]">
-                    <Radio.Indicator className="bg-[#f10262]" />
-                  </Radio.Control>
-
-                  <Radio.Content>
-                    <Label className="cursor-pointer">Librarian</Label>
-                  </Radio.Content>
-                </Radio>
-              </RadioGroup>
-            </div>
 
             {error && (
               <div className="p-3.5 text-xs font-medium rounded-xl bg-red-100/60 dark:bg-red-950/50 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900">
@@ -347,16 +371,6 @@ export default function SignupPage() {
 
               <span className="absolute inset-0 rounded-xl bg-[#5d1bb6] translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></span>
             </Button>
-
-            <div className="text-center pt-4 border-t border-zinc-100 dark:border-zinc-800 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-              Already have an account?{" "}
-              <Link
-                href="/signin"
-                className="font-medium cursor-pointer text-sm text-[#f10262] dark:text-[#5d1bb6]"
-              >
-                Signin
-              </Link>
-            </div>
           </form>
         </div>
       </div>
