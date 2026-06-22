@@ -50,28 +50,28 @@ const SideNav = ({
 
   const menuItems = {
     reader: [
-      { name: "Profile", href: "/dashboard/profile", icon: Users },
-      { name: "My Orders", href: "/dashboard/orders", icon: ShoppingBag },
-      { name: "Wishlist", href: "/dashboard/wishlist", icon: Heart },
-      { name: "Addresses", href: "/dashboard/addresses", icon: MapPin },
+      { name: "Dashboard", href: "/dashboard/reader", icon: Settings },
+      { name: "Profile", href: "/dashboard/reader/profile", icon: Users },
+      { name: "Reading Lists", href: "/dashboard/reader/reading-list", icon: ShoppingBag },
+      { name: "Wishlist", href: "/dashboard/reader/wish-list", icon: Heart },
+      { name: "Deliveris", href: "/dashboard/reader/delivery", icon: ShoppingCart },
     ],
 
     librarian: [
-      { name: "Profile", href: "/dashboard/profile", icon: Users },
-      { name: "Products", href: "/dashboard/products", icon: Package },
-      { name: "Orders", href: "/dashboard/orders", icon: ShoppingCart },
-      { name: "Earnings", href: "/dashboard/earnings", icon: DollarSign },
-      { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+      { name: "Dashboard", href: "/dashboard/librarian", icon: Settings },
+      { name: "Profile", href: "/dashboard/librarian/profile", icon: Users },
+      { name: "Books", href: "/dashboard/librarian/books", icon: Store },
+      { name: "Inventory", href: "/dashboard/librarian/inventory", icon: Package },
+      { name: "Deliveris", href: "/dashboard/librarian/delivery", icon: ShoppingCart },
     ],
 
     admin: [
-      { name: "Profile", href: "/dashboard/profile", icon: Users },
-      { name: "Users", href: "/dashboard/users", icon: UserCog },
-      { name: "Sellers", href: "/dashboard/sellers", icon: Store },
-      { name: "Products", href: "/dashboard/products", icon: Package },
-      { name: "Orders", href: "/dashboard/orders", icon: ShoppingCart },
-      { name: "Reports", href: "/dashboard/reports", icon: FileText },
-      { name: "Settings", href: "/dashboard/settings", icon: Settings },
+      { name: "Dashboard", href: "/dashboard/admin", icon: Settings },
+      { name: "Profile", href: "/dashboard/admin/profile", icon: Users },
+      { name: "Users", href: "/dashboard/admin/users", icon: FileText },
+      { name: "Books", href: "/dashboard/admin/books", icon: Store },
+      { name: "Roles", href: "/dashboard/admin/roles", icon: UserCog },
+      { name: "Transactions", href: "/dashboard/admin/transactions", icon: ShoppingCart },
     ],
   };
 
@@ -80,11 +80,11 @@ const SideNav = ({
   return (
     <aside
       className={clsx(
-        "h-full border-r flex flex-col transition-all duration-300",
+        "h-full shadow-sm flex flex-col transition-all duration-300",
         collapsed ? "w-20" : "w-64"
       )}
     >
-      <div className="h-16 flex items-center justify-between px-4 border-b">
+      <div className="h-16 flex items-center justify-between px-4 shadow-xs">
         {!collapsed && (
           <Link href="/" className="flex items-center gap-3">
             <Image src={lexiCart} width={100} height={100} alt="LexiCart"/>
@@ -109,10 +109,10 @@ const SideNav = ({
             <Link key={item.name} href={item.href}>
               <div
                 className={clsx(
-                  "flex items-center gap-3 px-3 py-2 mb-2 rounded-lg text-sm transition",
+                  "flex items-center gap-3 px-3 py-2 mb-2 rounded-lg text-sm transition font-semibold",
                   active
-                    ? "bg-gray-100 text-slate-700"
-                    : "hover:bg-gray-100 hover:text-slate-700 text-slate-700",
+                    ? "bg-[#ef0161]/10 text-[#ef0161]"
+                    : "hover:bg-[#ef0161]/10 hover:text-[#ef0161] text-slate-600",
                   collapsed && "justify-center",
                 )}
               >

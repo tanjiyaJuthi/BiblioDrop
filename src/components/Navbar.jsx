@@ -148,15 +148,15 @@ export default function Navbar() {
                           textValue="New file"
                           className="
                             rounded-xl
-                            hover:bg-[#f10262]/10
+                            hover:bg-[#ef0161]/10 hover:text-[#ef0161]
                           "
                         >
                           <Link
-                            className="flex items-center gap-2 rounded-xl w-full"
+                            className="flex items-center gap-2 rounded-xl w-full hover:text-[#ef0161]"
                             href={`/dashboard/${user?.role}`}
                           >
                             <MdDashboard />
-                            <Label className="hover:text-white">
+                            <Label>
                               Dashboard
                             </Label>
                           </Link>
@@ -170,11 +170,11 @@ export default function Navbar() {
                           onClick={handleSignOut}
                           className="
                             rounded-xl
-                            hover:bg-[#f10262]/10
+                            hover:bg-[#ef0161]/10 hover:text-[#ef0161]
                           "
                         >
                           <BiLogOut />
-                          <Label className="hover:text-white">
+                          <Label>
                             SignOut
                           </Label>
                         </Dropdown.Item>

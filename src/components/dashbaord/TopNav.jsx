@@ -30,7 +30,7 @@ export default function TopNav({
   };
 
   return (
-    <header className="h-16 border-b flex items-center justify-between px-4">
+    <header className="h-16 shadow-xs flex items-center justify-between px-4">
       {/* LEFT */}
       <div className="flex items-center gap-3">
         <Button
@@ -85,9 +85,9 @@ export default function TopNav({
                   <Dropdown.Menu
                     onAction={(key) => console.log(`Selected: ${key}`)}
                   >
-                    <Dropdown.Item id="new-file" textValue="New file" className="hover:rounded-xl">
+                    <Dropdown.Item id="new-file" textValue="New file" className="hover:rounded-xl hover:text-[#ef0161] hover:bg-[#ef0161]/10">
                       <Link
-                        className="flex items-center gap-2 "
+                        className="flex items-center gap-2"
                         href={`/dashboard/${user?.role}`}
                       >
                         <MdDashboard />
@@ -95,7 +95,7 @@ export default function TopNav({
                       </Link>
                     </Dropdown.Item>
 
-                    <Dropdown.Item id="copy-link" textValue="Copy link" className="hover:rounded-xl">
+                    <Dropdown.Item id="copy-link" textValue="Copy link" className="hover:rounded-xl hover:text-[#ef0161] hover:bg-[#ef0161]/10">
                       <CgProfile />
                       <Label>Profile</Label>
                     </Dropdown.Item>
@@ -103,9 +103,8 @@ export default function TopNav({
                     <Dropdown.Item
                       id="delete-file"
                       textValue="Delete file"
-                      variant="danger"
                       onClick={handleLogout}
-                      className="hover:rounded-xl"
+                      className="text-slate-600 hover:rounded-xl hover:text-[#ef0161] hover:bg-[#ef0161]/10"
                     >
                       <BiLogOut />
                       <Label>Logout</Label>
