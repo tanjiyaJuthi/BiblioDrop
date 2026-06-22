@@ -1,15 +1,11 @@
-import { DashboardSidebar } from '@/components/dashbaord/DashboardSidebar';
+import DashboardShell from "./DashboardShell";
 
-const DashboardLayout = ({children}) => {
-    return (
-        <div className="flex min-h-screen">
-
-            <DashboardSidebar />
-
-            <div className="flex-1">{children}</div>
-            
-        </div>
-    );
-};
+const DashboardLayout = ({ children }) => {
+  return (
+    <DashboardShell>
+      {children}
+    </DashboardShell>        
+  );
+}
 
 export default DashboardLayout;

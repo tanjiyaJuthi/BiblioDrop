@@ -48,53 +48,51 @@ export default function ChooseRolePage() {
     };
     return (
         <div className="min-h-screen flex items-center justify-center px-5">
-        <div className="w-full max-w-md space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold">
-                    Choose your role
-                </h1>
-
-                <p className="text-sm text-zinc-500">
-                    Select how you want to use LexiCart
-                </p>
-            </div>
-
-            <div className="grid gap-4">
-                {roles.map((item) => (
-                    <button
-                    key={item.id}
-                    onClick={() => setRole(item.id)}
-                    className={`
-                        text-left p-5 rounded-xl border transition
-                        ${
-                        role === item.id
-                            ? "border-[#f10262] bg-[#f10262]/10"
-                            : "border-zinc-200 hover:border-[#f10262]"
-                        }
-                    `}
-                    >
-                    <h3 className="font-semibold">
-                        {item.title}
-                    </h3>
+            <div className="w-full max-w-md space-y-6">
+                <div>
+                    <h1 className="text-3xl font-bold">
+                        Choose your role
+                    </h1>
 
                     <p className="text-sm text-zinc-500">
-                        {item.description}
+                        Select how you want to use LexiCart
                     </p>
-                    </button>
-                ))}
+                </div>
+
+                <div className="grid gap-4">
+                    {roles.map((item) => (
+                        <Button
+                            key={item.id}
+                            onClick={() => setRole(item.id)}
+                            className={`
+                                text-left p-5 rounded-xl border transition
+                                ${
+                                    role === item.id
+                                    ? "border-[#f10262] bg-[#f10262]/10"
+                                    : "border-zinc-200 hover:border-[#f10262]"
+                                }
+                            `}
+                        >
+                            <h3 className="font-semibold">
+                                {item.title}
+                            </h3>
+
+                            <p className="text-sm text-zinc-500">
+                                {item.description}
+                            </p>
+                        </Button>
+                    ))}
+                </div>
+
+                <Button
+                    className="w-full bg-[#f10262] text-white rounded-xl"
+                    isLoading={loading}
+                    disabled={!role}
+                    onClick={handleRoleSubmit}
+                >
+                    Continue
+                </Button>
             </div>
-
-
-            <Button
-                className="w-full bg-[#f10262] text-white rounded-xl"
-                isLoading={loading}
-                disabled={!role}
-                onClick={handleRoleSubmit}
-            >
-                Continue
-            </Button>
-
         </div>
-    </div>
     );
 }

@@ -17,3 +17,15 @@ export const formatMonthYear = (date) => {
     year: "numeric",
   });
 };
+
+export const getInitials = (name = "") =>
+  name
+    .split(" ")
+    .map(n => n[0])
+    .join("")
+    .toUpperCase();
+
+export const handleSelect = (setter) => (key) => (keys) => {
+  const value = Array.from(keys)[0];
+  setter(key, value);
+};
