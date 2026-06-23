@@ -20,7 +20,7 @@ const DashboardShell = ({ children }) => {
           setCollapsed={setCollapsed}
         />
 
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-6 bg-[#ef0161]/2">
           {children}
         </main>
       </div>

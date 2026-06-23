@@ -2,6 +2,7 @@
 @import "@heroui/styles"; 
 
 
-.input:focus, .input[data-focused="true"] {
+.input:focus, .input[data-focused="true"],
+.textarea:focus, .textarea:focus-visible {
     --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(2px + var(--tw-ring-offset-width)) #f10262;
 }
