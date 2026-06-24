@@ -71,6 +71,7 @@ const SideNav = ({
       { name: "Users", href: "/dashboard/admin/users", icon: FileText },
       { name: "Books", href: "/dashboard/admin/books", icon: Store },
       { name: "Roles", href: "/dashboard/admin/roles", icon: UserCog },
+      { name: "Categories", href: "/dashboard/admin/categories", icon: Package },,
       { name: "Transactions", href: "/dashboard/admin/transactions", icon: ShoppingCart },
     ],
   };

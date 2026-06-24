@@ -18,34 +18,36 @@ import {
 
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
+import Loading from "@/app/loading";
 
-const BooksPage = () => {
+
+const CategoriesPage = () => {
     const router = useRouter();
     
-    const [books, setBooks] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [selectedBook, setSelectedBook] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [deleting, setDeleting] = useState(false);
 
-    const fetchBooks = async () => {
+    const fetchCategories = async () => {
         try {
             const { data: tokenData } = await authClient.token();
-            const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/dashboard`;
 
-            const res = await fetch(url, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${tokenData?.token}`,
-                },
-            });
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/api/category`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${tokenData?.token}`,
+                    },
+                }
+            );
 
             const data = await res.json();
 
             if (res.ok) {
-                setBooks(data.data);
+                setCategories(data.data);
             }
         } catch (error) {
             console.log(error);
@@ -55,16 +57,16 @@ const BooksPage = () => {
     };
 
     useEffect(() => {
-        fetchBooks();
+        fetchCategories();
     }, []);
 
-    const openDeleteModal = (book) => {
-        setSelectedBook(book);
+    const openDeleteModal = (category) => {
+        setSelectedCategory(category);
         setDeleteModalOpen(true);
     };
 
-    const deleteBook = async () => {
-        if (!selectedBook) return;
+    const deleteCategory = async () => {
+        if (!selectedCategory) return;
 
         try {
             setDeleting(true);
@@ -72,7 +74,7 @@ const BooksPage = () => {
             const { data: tokenData } = await authClient.token();
 
             const res = await fetch(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/${selectedBook._id}`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/api/category/${selectedCategory._id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -82,14 +84,14 @@ const BooksPage = () => {
             );
 
             if (res.ok) {
-                setBooks(
-                    books.filter(
-                        book => book._id !== selectedBook._id
+                setCategories(
+                    categories.filter(
+                        category => category._id !== selectedCategory._id
                     )
                 );
 
                 setDeleteModalOpen(false);
-                setSelectedBook(null);
+                setSelectedCategory(null);
             }
 
         } catch(error) {
@@ -99,17 +101,11 @@ const BooksPage = () => {
         }
     };
 
-    const statusColors = {
-        Pending: "bg-yellow-100 text-yellow-700",
-        Published: "bg-blue-100 text-blue-700",
-        Unpublished: "bg-red-100 text-red-700",
-    };
-
     return (
         <Card className="rounded-xl p-6">
             <div className="flex justify-between items-center mb-6">
                 <Card.Title className="text-xl">
-                    Books
+                    categories
                 </Card.Title>
 
                 <Button
@@ -122,84 +118,57 @@ const BooksPage = () => {
                     flex items-center gap-2"
                     onPress={() =>
                         router.push(
-                            "/dashboard/librarian/books/add"
+                            "/dashboard/admin/categories/add"
                         )
                     }
                 >
                     <Plus size={17}/>
-                    Add Book
+                    Add Category
                 </Button>
             </div>
 
             <Table className="bg-[#ef0161]/10 rounded-xl">
                 <Table.ScrollContainer>
-                    <Table.Content aria-label="Books table" className="min-w-150">
+                    <Table.Content aria-label="categories table" className="min-w-150">
                         <Table.Header className="bg-[#ef0161]/1 text-xl">
-                            <Table.Column isRowHeader>Title</Table.Column>
-                            <Table.Column>Cover</Table.Column>
-                            <Table.Column>Author</Table.Column>
-                            <Table.Column>Category</Table.Column>
-                            <Table.Column>Fee</Table.Column>
-                            <Table.Column>Approval Status</Table.Column>
+                            <Table.Column isRowHeader>Category Name</Table.Column>
+                            <Table.Column isRowHeader>Description</Table.Column>
+                            <Table.Column>Image</Table.Column>
                             <Table.Column>Actions</Table.Column>
                         </Table.Header>
 
                         <Table.Body>
                             {loading ? (
                                 <Table.Row>
-                                    <Table.Cell colSpan={7}>
-                                        Loading...
+                                    <Table.Cell colSpan={4}>
+                                        <Loading />
                                     </Table.Cell>
                                 </Table.Row>
-                            ) : books.length === 0 ? (
+                            ) : categories.length === 0 ? (
                                 <Table.Row>
-                                    <Table.Cell colSpan={7}>
-                                        No books found.
+                                    <Table.Cell colSpan={4}>
+                                        No categories found.
                                     </Table.Cell>
                                 </Table.Row>
                             ) : (
-                                books.map((item) => (
+                                categories.map((item) => (
                                     <Table.Row key={item._id}>
                                         <Table.Cell>
-                                            {item.title}
+                                            {item.name}
                                         </Table.Cell>
 
+                                        <Table.Cell>
+                                            {item.description || "No description"}
+                                        </Table.Cell>
+                                        
                                         <Table.Cell>
                                             <Image
-                                                src={item.coverImage}
-                                                alt={item.title}
-                                                width={40}
-                                                height={56}
-                                                className="
-                                                    h-14
-                                                    w-10
-                                                    rounded
-                                                    object-cover
-                                                "
+                                                width={100}
+                                                height={100}
+                                                src={item.image}
+                                                alt={item.name}
+                                                className="w-12 h-12 rounded-lg object-cover"
                                             />
-                                        </Table.Cell>
-
-                                        <Table.Cell>
-                                            {item.author}
-                                        </Table.Cell>
-
-                                        <Table.Cell>
-                                            {item.category?.name}
-                                        </Table.Cell>
-
-                                        <Table.Cell>
-                                            ${item.deliveryFee}
-                                        </Table.Cell>
-
-                                        <Table.Cell>
-                                            <span
-                                                className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                                    statusColors[item.approvalStatus] ||
-                                                    "bg-gray-100 text-gray-700"
-                                                }`}
-                                            >
-                                                {item.approvalStatus}
-                                            </span>
                                         </Table.Cell>
 
                                         <Table.Cell>
@@ -215,7 +184,7 @@ const BooksPage = () => {
                                                     "
                                                     onPress={() =>
                                                         router.push(
-                                                            `/dashboard/librarian/books/edit/${item._id}`
+                                                            `/dashboard/admin/categories/edit/${item._id}`
                                                         )
                                                     }
                                                 >
@@ -255,7 +224,7 @@ const BooksPage = () => {
 
                             <Modal.Header>
                                 <Modal.Heading>
-                                    Delete Book
+                                    Delete Category
                                 </Modal.Heading>
                             </Modal.Header>
 
@@ -263,7 +232,7 @@ const BooksPage = () => {
                                 <p>
                                     Are you sure you want to delete{" "}
                                     <strong>
-                                        {selectedBook?.title}
+                                        {selectedCategory?.name}
                                     </strong>
                                     ?
                                 </p>
@@ -281,7 +250,7 @@ const BooksPage = () => {
                                 <Button
                                     className="rounded-xl bg-[#ef0161] text-white hover:bg-[#5d1bb6] transition-all"
                                     isLoading={deleting}
-                                    onPress={deleteBook}
+                                    onPress={deleteCategory}
                                 >
                                     Delete
                                 </Button>
@@ -295,4 +264,4 @@ const BooksPage = () => {
     );
 };
 
-export default BooksPage;
+export default CategoriesPage;
