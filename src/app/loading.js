@@ -29,7 +29,7 @@ export default function Loading() {
 
         {/* Text */}
         <h2 className="mb-2 text-xl font-semibold text-white">
-          Loading Experience
+          Loading
         </h2>
 
         <p className="mb-6 text-sm text-white/60">

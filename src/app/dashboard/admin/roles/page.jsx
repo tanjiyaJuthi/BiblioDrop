@@ -148,10 +148,7 @@ const RolesPage = () => {
                                 </Table.Row>
                             ) : (
                                 roles.map((item) => (
-                                    <Table.Row 
-                                        key={item._id}
-                                        className="hover:bg-[#ef0161]/.1"
-                                    >
+                                    <Table.Row key={item._id} className="hover:bg-[#ef0161]/.1">
                                         <Table.Cell>
                                             {item.title}
                                         </Table.Cell>
