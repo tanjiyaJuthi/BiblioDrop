@@ -56,12 +56,15 @@ export default function SignupPage() {
 
     setIsLoading(true);
 
+    const role = "";
+
     try {
       const { data, error: authError } = await signUp.email({
         email,
         password,
         name,
         image,
+        role,
         callbackURL: "/choose-role",
       });
 

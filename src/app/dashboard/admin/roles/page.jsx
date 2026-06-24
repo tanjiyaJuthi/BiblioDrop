@@ -237,7 +237,7 @@ const RolesPage = () => {
                                 </Button>
 
                                 <Button
-                                    className="rounded-xl bg-[#ef0161] text-white hover:bg-[#5d1bb6]transition-all"
+                                    className="rounded-xl bg-[#ef0161] text-white hover:bg-[#5d1bb6] transition-all"
                                     isLoading={deleting}
                                     onPress={deleteRole}
                                 >

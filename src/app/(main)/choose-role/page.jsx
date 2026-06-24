@@ -1,30 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@heroui/react";
+import { Button, Card } from "@heroui/react";
+import { authClient } from "@/lib/auth-client";
 
 export default function ChooseRolePage() {
     const router = useRouter();
 
-    const [role, setRole] = useState("");
+    const [roles, setRoles] = useState([]);
+    const [selectedRole, setSelectedRole] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const roles = [
-        {
-            id: "reader",
-            title: "Reader",
-            description: "Browse and borrow books",
-        },
-        {
-            id: "librarian",
-            title: "Librarian",
-            description: "Manage books and library resources",
-        },
-    ];
+    const fetchRoles = async () => {
+        try {
+            const { data: tokenData } = await authClient.token();
+            // console.log("tokenData:", tokenData);
+
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/api/role`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${tokenData?.token}`,
+                    },
+                }
+            );
+
+            const data = await res.json();
+
+            // console.log("roles:", data);
+
+            if (res.ok) {
+                setRoles(
+                    data.data.filter(
+                        (role) => role.title !== "admin"
+                    )
+                );
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchRoles();
+    }, []);
 
     const handleRoleSubmit = async () => {
-        if (!role) return;
+        if (!selectedRole) return;
 
         setLoading(true);
 
@@ -35,20 +58,23 @@ export default function ChooseRolePage() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    role,
+                    role: selectedRole,
                 }),
             });
 
-            router.push("/");
+            await authClient.signOut();
+
+            router.push("/signin");
         } catch (error) {
-            console.log(error);
+            console.error(error);
         } finally {
             setLoading(false);
         }
     };
+
     return (
-        <div className="min-h-screen flex items-center justify-center px-5">
-            <div className="w-full max-w-md space-y-6">
+        <div className="flex items-center justify-center px-5 lg:px-0 my-10">
+            <Card className="w-full max-w-md space-y-6">
                 <div>
                     <h1 className="text-3xl font-bold">
                         Choose your role
@@ -61,38 +87,45 @@ export default function ChooseRolePage() {
 
                 <div className="grid gap-4">
                     {roles.map((item) => (
-                        <Button
-                            key={item.id}
-                            onClick={() => setRole(item.id)}
+                        <div
+                            key={item.title}
+                            onClick={() => {
+                                setSelectedRole(item.title);
+                            }}
                             className={`
-                                text-left p-5 rounded-xl border transition
+                                cursor-pointer
+                                rounded-2xl
+                                border
+                                p-5
+                                transition-all
+                                hover:shadow-md
                                 ${
-                                    role === item.id
-                                    ? "border-[#f10262] bg-[#f10262]/10"
-                                    : "border-zinc-200 hover:border-[#f10262]"
+                                    selectedRole === item.title
+                                        ? "border-[#f10262]/10 bg-[#f10262]/5"
+                                        : "border-zinc-200 bg-white"
                                 }
                             `}
                         >
-                            <h3 className="font-semibold">
+                            <h3 className="font-semibold text-lg">
                                 {item.title}
                             </h3>
 
-                            <p className="text-sm text-zinc-500">
+                            <p className="text-sm text-slate-700 mt-1">
                                 {item.description}
                             </p>
-                        </Button>
+                        </div>
                     ))}
                 </div>
 
                 <Button
                     className="w-full bg-[#f10262] text-white rounded-xl"
                     isLoading={loading}
-                    disabled={!role}
+                    isDisabled={!selectedRole}
                     onClick={handleRoleSubmit}
                 >
                     Continue
                 </Button>
-            </div>
+            </Card>
         </div>
     );
 }
