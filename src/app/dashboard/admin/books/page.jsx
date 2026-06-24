@@ -107,6 +107,35 @@ const BooksPage = () => {
     }
   };
 
+  const publishBook = async (id) => {
+    try {
+      const { data: tokenData } = await authClient.token();
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/publish/${id}`;
+
+      const res = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${tokenData?.token}`,
+        },
+      });
+
+      if (res.ok) {
+        setBooks((prev) =>
+          prev.map((book) =>
+            book._id === id
+              ? {
+                  ...book,
+                  approvalStatus: "Published",
+                }
+              : book,
+          ),
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const openDeleteModal = (book) => {
     setSelectedBook(book);
     setDeleteModalOpen(true);
@@ -151,7 +180,7 @@ const BooksPage = () => {
 
   return (
     <Card className="rounded-xl p-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex-row lg:flex justify-between items-center mb-6">
         <Card.Title className="text-xl"> Books </Card.Title>
 
         <div className="text-sm text-gray-500">Total Books: {books.length}</div>
@@ -261,7 +290,7 @@ const BooksPage = () => {
                                 bg-[#ef0161]
                                 hover:bg-[#5d1bb6]
                             "
-                            onPress={() => approveBook(book._id)}
+                            onPress={() => publishBook(book._id)}
                           >
                             <Eye size={15} />
                           </Button>

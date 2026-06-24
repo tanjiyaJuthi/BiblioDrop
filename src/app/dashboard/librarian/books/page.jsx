@@ -14,6 +14,8 @@ import {
     Pencil,
     Trash2,
     Plus,
+    EyeOff,
+    Eye,
 } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
@@ -98,6 +100,64 @@ const BooksPage = () => {
             setDeleting(false);
         }
     };
+
+  const unpublishBook = async (id) => {
+    try {
+      const { data: tokenData } = await authClient.token();
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/unpublish/${id}`;
+
+      const res = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${tokenData?.token}`,
+        },
+      });
+
+      if (res.ok) {
+        setBooks((prev) =>
+          prev.map((book) =>
+            book._id === id
+              ? {
+                  ...book,
+                  approvalStatus: "Unpublished",
+                }
+              : book,
+          ),
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+   const publishBook = async (id) => {
+    try {
+      const { data: tokenData } = await authClient.token();
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/publish/${id}`;
+
+      const res = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${tokenData?.token}`,
+        },
+      });
+
+      if (res.ok) {
+        setBooks((prev) =>
+          prev.map((book) =>
+            book._id === id
+              ? {
+                  ...book,
+                  approvalStatus: "Published",
+                }
+              : book,
+          ),
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
     const statusColors = {
         Pending: "bg-yellow-100 text-yellow-700",
@@ -204,6 +264,36 @@ const BooksPage = () => {
 
                                         <Table.Cell>
                                             <div className="flex gap-2">
+                                                {item.approvalStatus === "Published" && (
+                                                    <Button
+                                                        size="sm"
+                                                        className="
+                                                            rounded-lg
+                                                            text-white
+                                                            bg-[#ef0161]
+                                                            hover:bg-[#5d1bb6]
+                                                        "
+                                                        onPress={() => unpublishBook(item._id)}
+                                                    >
+                                                        <EyeOff size={15} />
+                                                    </Button>
+                                                    )}
+
+                                                    {item.approvalStatus === "Unpublished" && (
+                                                    <Button
+                                                        size="sm"
+                                                        className="
+                                                            rounded-lg
+                                                            text-white
+                                                            bg-[#ef0161]
+                                                            hover:bg-[#5d1bb6]
+                                                        "
+                                                        onPress={() => publishBook(item._id)}
+                                                    >
+                                                        <Eye size={15} />
+                                                    </Button>
+                                                    )}
+
                                                 <Button
                                                     size="sm"
                                                     className="

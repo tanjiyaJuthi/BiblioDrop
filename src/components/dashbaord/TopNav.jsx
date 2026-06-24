@@ -95,11 +95,6 @@ export default function TopNav({
                       </Link>
                     </Dropdown.Item>
 
-                    <Dropdown.Item id="copy-link" textValue="Copy link" className="hover:rounded-xl hover:text-[#ef0161] hover:bg-[#ef0161]/10">
-                      <CgProfile />
-                      <Label>Profile</Label>
-                    </Dropdown.Item>
-
                     <Dropdown.Item
                       id="delete-file"
                       textValue="Delete file"
