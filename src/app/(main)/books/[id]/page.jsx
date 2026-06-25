@@ -17,6 +17,9 @@ import NoData from '@/components/NoData';
 import { useParams } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
 import { Button } from '@heroui/react';
+import ReviewForm from '@/components/ReviewForm';
+import ReviewList from '@/components/ReviewList';
+import Rating from '@/components/Rating';
 
 const BookDetailPage = () => {
   const { id } = useParams();
@@ -24,11 +27,15 @@ const BookDetailPage = () => {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [comments, setComments] = useState([]);
+  const [ratings, setRatings] = useState([]);
+
   const { data: session } = useSession();
   const user = session?.user;
 
   useEffect(() => {
     fetchBook();
+    fetchReviews();
   }, [id]);
 
   const fetchBook = async () => {
@@ -46,6 +53,32 @@ const BookDetailPage = () => {
       setLoading(false);
     }
   };
+
+  const fetchReviews = async () => {
+  try {
+    const [commentsRes, ratingsRes] = await Promise.all([
+      fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/book/${id}`
+      ),
+      fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/rating/book/${id}`
+      ),
+    ]);
+
+    const commentsData = await commentsRes.json();
+    const ratingsData = await ratingsRes.json();
+
+    if (commentsData.success) {
+      setComments(commentsData.data);
+    }
+
+    if (ratingsData.success) {
+      setRatings(ratingsData.data);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   if (loading) return <Loading />;
   if (!book) return <div className="max-w-7xl mx-auto my-20"><NoData /></div>;
@@ -94,11 +127,11 @@ const BookDetailPage = () => {
         </div>
 
         {/* Right Side: Clean Book Spec Info Grid Layout */}
-        <div className=" py-12 px-5 lg:px-16 flex flex-col justify-center max-w-3xl">
+        <div className="bg-[#ef0161]/2 py-12 px-5 lg:px-16 flex flex-col justify-center max-w-3xl">
           
           {/* Main Title Headers */}
           <div>
-            <h1 className="text-3xl md:text-5xl tracking-wide">
+            <h1 className="text-3xl md:text-5xl font-semibold tracking-wide">
               {book.title}
             </h1>
             {/* Blue Ribbon Accent Divider Design Line */}
@@ -113,11 +146,11 @@ const BookDetailPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
               <div>
                 <div className="flex items-center gap-2 text-sm font-semibold text-gray-600 tracking-wide uppercase">
-                  <div className="w-2.5 h-2.5 bg-[#5d1bb6] rotate-45" /> Author
+                  <div className="w-2.5 h-2.5 bg-[#ef0161] rotate-45" /> Author
                 </div>
 
                 <div className="mt-3 flex items-center gap-3 pl-4">
-                  <div className="relative w-12 h-12 rounded-lg border-2 border-[#5d1bb6] overflow-hidden bg-gray-200">
+                  <div className="relative w-12 h-12 rounded-lg border-2 border-[#ef0161] overflow-hidden bg-gray-200">
                     <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 font-bold text-xs">
                       {book.author?.charAt(0).toUpperCase()}
                     </div>
@@ -133,7 +166,7 @@ const BookDetailPage = () => {
             {/* Description Paragraph Container */}
             <div className="pt-2">
               <div className="flex items-center gap-2 text-sm font-semibold text-gray-600 tracking-wide uppercase">
-                <div className="w-2.5 h-2.5 bg-[#5d1bb6] rotate-45" /> Description
+                <div className="w-2.5 h-2.5 bg-[#ef0161] rotate-45" /> Description
               </div>
               <p className="mt-2 text-sm md:text-base leading-7 text-gray-500 font-light pl-4 align-justify">
                 {book.description || 'No summary overview details provided for this volume entry context.'}
@@ -143,14 +176,10 @@ const BookDetailPage = () => {
             {/* Ratings Summary Deck */}
             <div className="pt-2">
               <div className="flex items-center gap-2 text-sm font-semibold text-gray-600 tracking-wide uppercase">
-                <div className="w-2.5 h-2.5 bg-[#5d1bb6] rotate-45" /> Rating
+                <div className="w-2.5 h-2.5 bg-[#ef0161] rotate-45" /> Rating
               </div>
               <div className="mt-2.5 flex items-center gap-1 text-gray-300 pl-4">
-                <Star size={18} fill="#5d1bb6" className="text-[#5d1bb6]" />
-                <Star size={18} />
-                <Star size={18} />
-                <Star size={18} />
-                <Star size={18} />
+                <Rating />
               </div>
             </div>
 
@@ -159,7 +188,7 @@ const BookDetailPage = () => {
               {!isOwner && (
                 <Button
                   disabled={isUnavailable}
-                  className={`h-11 rounded-xl px-8 text-sm font-semibold text-white transition shadow-sm ${
+                  className={`h-9.5 rounded-xl px-8 text-sm font-semibold text-white transition shadow-sm ${
                     isUnavailable ? 'cursor-not-allowed bg-gray-300' : 'bg-[#ef0161]'
                   }`}
                 >
@@ -188,6 +217,17 @@ const BookDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {!isOwner &&
+        user?.role === 'reader' && (
+          <ReviewForm
+            bookId={book._id}
+            onSuccess={fetchReviews}
+          />
+      )}
+
+      <ReviewList comments={comments} ratings={ratings} />
+              
     </section>
   );
 };

@@ -201,10 +201,6 @@ const Featured = () => {
             </Link>
         </div>
 
-        <div className="max-w-7xl mx-auto">
-            {categories.length === 0 && <NoData />}
-          </div>
-
       {/* Automated Carousel Element Wrapper */}
       <Swiper
         modules={[Autoplay]}
@@ -221,6 +217,9 @@ const Featured = () => {
             1280: {slidesPerView: 4,},
         }}
         >
+          <div className="max-w-7xl mx-auto">
+            {categories.length === 0 && <NoData />}
+          </div>
         {books.map((book) => (
           <SwiperSlide key={book._id}>
             <Book book={book} />

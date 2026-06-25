@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import NoData from '@/components/NoData';
 
 const CategoryPage = () => {
   const [categories, setCategories] = useState([]);
@@ -29,6 +30,10 @@ const CategoryPage = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
+      <div className="max-w-7xl mx-auto my-20">
+        <NoData />
+      </div>
+
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {categories.map((category) => (
           <Link
