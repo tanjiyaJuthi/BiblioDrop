@@ -14,7 +14,7 @@ const ReviewList = ({
   };
 
   return (
-    <section className="mt-20 py-20 bg-[#ef0161]/2">
+    <section className="py-20 bg-[#ef0161]/2">
       <div className="mx-auto max-w-7xl px-5 lg:px-0 space-y-6">
         <h3 className="text-3xl font-semibold">
           Reader Reviews

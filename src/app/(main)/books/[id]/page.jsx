@@ -179,7 +179,7 @@ const BookDetailPage = () => {
                 <div className="w-2.5 h-2.5 bg-[#ef0161] rotate-45" /> Rating
               </div>
               <div className="mt-2.5 flex items-center gap-1 text-gray-300 pl-4">
-                <Rating />
+                <Rating ratings={ratings} />
               </div>
             </div>
 
@@ -226,8 +226,9 @@ const BookDetailPage = () => {
           />
       )}
 
-      <ReviewList comments={comments} ratings={ratings} />
-              
+      <div className={user?.role === 'reader' ? 'mt-20' : ''}>
+        <ReviewList comments={comments} ratings={ratings} />
+      </div>              
     </section>
   );
 };
