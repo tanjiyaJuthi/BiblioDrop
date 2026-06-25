@@ -118,6 +118,7 @@ import Book from '../Book';
 // Import Swiper styling dependencies directly
 import 'swiper/css';
 import Link from 'next/link';
+import NoData from '../NoData';
 
 const Featured = () => {
     const [books, setBooks] = useState([]);
@@ -199,6 +200,10 @@ const Featured = () => {
                 />
             </Link>
         </div>
+
+        <div className="max-w-7xl mx-auto">
+            {categories.length === 0 && <NoData />}
+          </div>
 
       {/* Automated Carousel Element Wrapper */}
       <Swiper

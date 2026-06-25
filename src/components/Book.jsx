@@ -1,3 +1,4 @@
+import { Button } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -44,22 +45,14 @@ const Book = ({ book }) => {
                 </p>
                 </div>
 
-                <Link
-                    href="/books"
-                    className="relative overflow-hidden h-9.5 px-6 text-sm font-semibold text-white rounded-xl bg-[#ef0161] group flex items-center"
-                  >
+                <Button
+                    disabled={book.status !== "Available"}
+                    className="relative overflow-hidden h-9.5 px-6 text-sm font-semibold text-white rounded-xl flex items-center disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-70 bg-[#ef0161]"
+                    >
                     <span className="relative z-10">
-                        {book.status === 'Available' && (
-                            <span className="absolute right-4 top-4 rounded-lg bg-[#ef0161] px-3 py-1 text-xs font-semibold text-white">
-                                Unavailable
-                            </span>
-                        )}
+                        {book.status === "Available" ? "Available" : "Checked Out"}
                     </span>
-
-                    <span
-                      className="absolute inset-0 rounded-xl bg-[#5d1bb6] translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out pointer-events-none"
-                    />
-                </Link>
+                </Button>
             </div>
             </div>
         </div>

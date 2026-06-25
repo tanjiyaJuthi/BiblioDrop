@@ -4,19 +4,19 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  Calendar,
-  User,
-  Truck,
   Star,
   Edit,
   Trash2,
   EyeOff,
+  ArrowLeft,
+  ArrowRight
 } from 'lucide-react';
 
 import Loading from '@/app/loading';
 import NoData from '@/components/NoData';
 import { useParams } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
+import { Button } from '@heroui/react';
 
 const BookDetailPage = () => {
   const { id } = useParams();
@@ -34,11 +34,7 @@ const BookDetailPage = () => {
   const fetchBook = async () => {
     try {
       setLoading(true);
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/${id}`
-      );
-
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/book/${id}`);
       const data = await res.json();
 
       if (data.success) {
@@ -52,201 +48,143 @@ const BookDetailPage = () => {
   };
 
   if (loading) return <Loading />;
-
   if (!book) return <div className="max-w-7xl mx-auto my-20"><NoData /></div>;
 
-  const isOwner =
-    user?._id === book?.librarianId?._id;
-
-  const isUnavailable =
-    book?.status === 'Checked Out';
+  const isOwner = user?._id === book?.librarianId?._id;
+  const isUnavailable = book?.status === 'Checked Out';
 
   return (
-    <section className="pb-20">
-      {/* Hero */}
-      <div className="h-72 bg-[#ef0161]" />
-
-      <div className="max-w-7xl mx-auto px-5 lg:px-0">
-        {/* Main Card */}
-        <div className="-mt-32 overflow-hidden rounded-xl bg-white shadow-xl">
-          <div className="grid gap-10 p-8 lg:grid-cols-2 lg:p-12">
-            {/* Cover */}
-            <div>
-              <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-100">
-                <Image
-                  src={book.coverImage}
-                  alt={book.title}
-                  fill
-                  priority
-                  className="object-cover"
-                />
-              </div>
+    <section className="w-full min-h-screen font-sans antialiased">
+      
+      {/* --- Top Layout: Split Banner and Details --- */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 w-full min-h-[50vh]">
+        
+        {/* Left Side: Deep Blue Styled Cover Slider Panel */}
+        <div className="bg-[#ef0161] relative flex flex-col justify-center items-center py-12 px-6 overflow-hidden">
+          
+          {/* Faux Decorative Book Array Center Deck */}
+          <div className="flex items-center justify-center gap-4 w-full max-w-lg opacity-90">
+            {/* Left Blurred Out-of-Focus Cards */}
+            <div className="hidden sm:block w-20 h-32 opacity-30 transform -rotate-6 filter blur-[1px] relative">
+              <Image src={book.coverImage} alt="" fill className="object-cover rounded-sm shadow-md" />
+            </div>
+            <div className="hidden sm:block w-28 h-44 opacity-50 transform -rotate-3 filter blur-[0.5px] relative">
+              <Image src={book.coverImage} alt="" fill className="object-cover rounded-sm shadow-md" />
             </div>
 
-            {/* Details */}
-            <div>
-              <div className="mb-5 flex flex-wrap gap-3">
-                {book.category?.name && (
-                  <span className="rounded-xl bg-[#ef0161]/10 px-4 py-2 text-sm font-medium text-[#ef0161]">
-                    {book.category.name}
-                  </span>
-                )}
+            {/* Active Highlighted Main Book Cover */}
+            <div className="relative w-48 h-72 md:w-56 md:h-84 shadow-2xl rounded-md overflow-hidden transform scale-105 border-2 border-white/20 transition-transform duration-300">
+              <Image
+                src={book.coverImage}
+                alt={book.title}
+                fill
+                priority
+                className="object-cover"
+              />
+            </div>
 
-                <span
-                  className={`rounded-xl px-4 py-2 text-sm font-medium ${
-                    book.status === 'Available'
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-red-100 text-red-600'
-                  }`}
-                >
-                  {book.status}
-                </span>
-              </div>
-
-              <h1 className="text-4xl font-bold text-slate-900">
-                {book.title}
-              </h1>
-
-              <div className="mt-5 flex items-center gap-2 text-slate-600">
-                <User size={18} />
-                <span>{book.author}</span>
-              </div>
-
-              <div className="mt-4 flex items-center gap-2 text-slate-600">
-                <Calendar size={18} />
-
-                <span>
-                  Added{' '}
-                  {new Date(
-                    book.createdAt
-                  ).toLocaleDateString()}
-                </span>
-              </div>
-
-              {/* Librarian */}
-              {book.librarianId && (
-                <div className="mt-4 flex items-center gap-2 text-slate-600">
-                  <User size={18} />
-
-                  <span>
-                    Librarian:{' '}
-                    {book.librarianId.name}
-                  </span>
-                </div>
-              )}
-
-              {/* Description */}
-              <div className="mt-8">
-                <h3 className="mb-3 text-xl font-semibold">
-                  Description
-                </h3>
-
-                <p className="leading-8 text-slate-600">
-                  {book.description}
-                </p>
-              </div>
-
-              {/* Delivery Fee */}
-              <div className="mt-8 rounded-xl border border-[#ef0161]/10 bg-[#fff8fb] p-6">
-                <div className="flex items-center gap-3">
-                  <Truck
-                    size={22}
-                    className="text-[#ef0161]"
-                  />
-
-                  <div>
-                    <p className="text-sm text-slate-500">
-                      Delivery Fee
-                    </p>
-
-                    <h3 className="text-3xl font-bold text-[#ef0161]">
-                      ৳{book.deliveryFee}
-                    </h3>
-                  </div>
-                </div>
-              </div>
-
-              {/* Request Delivery */}
-              {!isOwner && (
-                <button
-                  disabled={isUnavailable}
-                  className={`mt-8 h-12 rounded-xl px-8 font-semibold text-white transition ${
-                    isUnavailable
-                      ? 'cursor-not-allowed bg-gray-300'
-                      : 'bg-[#ef0161] hover:bg-[#d10056]'
-                  }`}
-                >
-                  Request Delivery
-                </button>
-              )}
-
-              {/* Librarian Controls */}
-              {isOwner && (
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <Link
-                    href={`/dashboard/books/edit/${book._id}`}
-                    className="flex items-center gap-2 rounded-xl bg-blue-50 px-5 py-3 font-medium text-blue-600"
-                  >
-                    <Edit size={18} />
-                    Edit
-                  </Link>
-
-                  <button className="flex items-center gap-2 rounded-xl bg-red-50 px-5 py-3 font-medium text-red-600">
-                    <Trash2 size={18} />
-                    Delete
-                  </button>
-
-                  <button className="flex items-center gap-2 rounded-xl bg-yellow-50 px-5 py-3 font-medium text-yellow-700">
-                    <EyeOff size={18} />
-                    Unpublish
-                  </button>
-                </div>
-              )}
+            {/* Right Blurred Out-of-Focus Cards */}
+            <div className="hidden sm:block w-28 h-44 opacity-50 transform rotate-3 filter blur-[0.5px] relative">
+              <Image src={book.coverImage} alt="" fill className="object-cover rounded-sm shadow-md" />
+            </div>
+            <div className="hidden sm:block w-20 h-32 opacity-30 transform rotate-6 filter blur-[1px] relative">
+              <Image src={book.coverImage} alt="" fill className="object-cover rounded-xl shadow-md" />
             </div>
           </div>
         </div>
 
-        {/* Reviews */}
-        <div className="mt-12">
-          <h2 className="mb-6 text-3xl font-bold">
-            Reader Reviews
-          </h2>
+        {/* Right Side: Clean Book Spec Info Grid Layout */}
+        <div className=" py-12 px-5 lg:px-16 flex flex-col justify-center max-w-3xl">
+          
+          {/* Main Title Headers */}
+          <div>
+            <h1 className="text-3xl md:text-5xl tracking-wide">
+              {book.title}
+            </h1>
+            {/* Blue Ribbon Accent Divider Design Line */}
+            <div className="flex items-center gap-1 mt-4">
+              <div className="w-3 h-3 bg-[#ef0161] rotate-45" />
+              <div className="w-3 h-3 bg-[#ef0161] rotate-45 -ml-1.5" />
+              <div className="h-[2px] bg-[#ef0161] w-48 ml-1" />
+            </div>
+          </div>
 
-          <div className="space-y-5">
-            {book.reviews?.length > 0 ? (
-              book.reviews.map((review) => (
-                <div
-                  key={review._id}
-                  className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
-                >
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-semibold">
-                      {review.user?.name}
-                    </h4>
+          <div className="mt-10 space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+              <div>
+                <div className="flex items-center gap-2 text-sm font-semibold text-gray-600 tracking-wide uppercase">
+                  <div className="w-2.5 h-2.5 bg-[#5d1bb6] rotate-45" /> Author
+                </div>
 
-                    <div className="flex items-center gap-1 text-yellow-500">
-                      {[...Array(review.rating)].map(
-                        (_, i) => (
-                          <Star
-                            key={i}
-                            size={16}
-                            fill="currentColor"
-                          />
-                        )
-                      )}
+                <div className="mt-3 flex items-center gap-3 pl-4">
+                  <div className="relative w-12 h-12 rounded-lg border-2 border-[#5d1bb6] overflow-hidden bg-gray-200">
+                    <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 font-bold text-xs">
+                      {book.author?.charAt(0).toUpperCase()}
                     </div>
                   </div>
-
-                  <p className="mt-3 text-slate-600">
-                    {review.comment}
-                  </p>
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-800">{book.author}</h4>
+                    <p className="text-xs text-gray-400 font-medium">Librarian: {book.librarianId?.name || 'Staff'}</p>
+                  </div>
                 </div>
-              ))
-            ) : (
-              <div className="max-w-7xl mx-auto">
-                <NoData />
               </div>
-            )}
+            </div>
+
+            {/* Description Paragraph Container */}
+            <div className="pt-2">
+              <div className="flex items-center gap-2 text-sm font-semibold text-gray-600 tracking-wide uppercase">
+                <div className="w-2.5 h-2.5 bg-[#5d1bb6] rotate-45" /> Description
+              </div>
+              <p className="mt-2 text-sm md:text-base leading-7 text-gray-500 font-light pl-4 align-justify">
+                {book.description || 'No summary overview details provided for this volume entry context.'}
+              </p>
+            </div>
+
+            {/* Ratings Summary Deck */}
+            <div className="pt-2">
+              <div className="flex items-center gap-2 text-sm font-semibold text-gray-600 tracking-wide uppercase">
+                <div className="w-2.5 h-2.5 bg-[#5d1bb6] rotate-45" /> Rating
+              </div>
+              <div className="mt-2.5 flex items-center gap-1 text-gray-300 pl-4">
+                <Star size={18} fill="#5d1bb6" className="text-[#5d1bb6]" />
+                <Star size={18} />
+                <Star size={18} />
+                <Star size={18} />
+                <Star size={18} />
+              </div>
+            </div>
+
+            {/* Action Operations Controller Drawer */}
+            <div className="pt-4 flex flex-wrap gap-4 items-center">
+              {!isOwner && (
+                <Button
+                  disabled={isUnavailable}
+                  className={`h-11 rounded-xl px-8 text-sm font-semibold text-white transition shadow-sm ${
+                    isUnavailable ? 'cursor-not-allowed bg-gray-300' : 'bg-[#ef0161]'
+                  }`}
+                >
+                  Request Delivery (৳{book.deliveryFee})
+                </Button>
+              )}
+
+              {isOwner && (
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href={`/dashboard/books/edit/${book._id}`}
+                    className="flex items-center gap-2 rounded-xl bg-blue-50 px-5 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-100 transition-colors"
+                  >
+                    <Edit size={16} /> Edit
+                  </Link>
+                  <Button className="flex items-center gap-2 rounded-xl bg-red-50 px-5 py-2.5 text-sm font-medium text-red-600 hover:bg-red-100 transition-colors">
+                    <Trash2 size={16} /> Delete
+                  </Button>
+                  <Button className="flex items-center gap-2 rounded-xl bg-yellow-50 px-5 py-2.5 text-sm font-medium text-yellow-700 hover:bg-yellow-100 transition-colors">
+                    <EyeOff size={16} /> Unpublish
+                  </Button>
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       </div>
