@@ -118,7 +118,7 @@ const Footer = () => {
                   key={item.label}
                   className="flex items-center gap-4"
                 >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full border border-dashed border-white/40">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-dashed border-white/40">
                     <Icon size={22} />
                   </div>
 
@@ -160,7 +160,7 @@ const Footer = () => {
                       key={index}
                       isIconOnly
                       variant="bordered"
-                      className="relative overflow-hidden group bg-[#5d1bb6] border-white/20 text-white"
+                      className="relative overflow-hidden group bg-[#5d1bb6] border-white/20 text-white rounded-xl"
                     >
                       <span className="absolute inset-0 bg-white translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></span>
 
@@ -201,7 +201,7 @@ const Footer = () => {
 
                 <Button
                   isIconOnly
-                  className="bg-[#5d1bb6] text-white"
+                  className="bg-[#5d1bb6] text-white rounded-xl"
                 >
                   <Send size={18} />
                 </Button>
@@ -235,15 +235,25 @@ const Footer = () => {
             )}
           </div>
         </div>
-
-        <Button
-          isIconOnly
-          onPress={scrollToTop}
-          className="absolute right-8 -top-6 bg-[#5d1bb6] text-white shadow-lg"
-        >
-          <ChevronUp size={18} />
-        </Button>
       </section>
+
+      <Button
+        isIconOnly
+        onPress={scrollToTop}
+        className="
+          fixed
+          bottom-4  
+          right-1
+          -translate-x-1/2
+          z-50
+          bg-[#5d1bb6]
+          text-white
+          shadow-lg
+          rounded-xl
+        "
+      >
+        <ChevronUp size={18} />
+      </Button>
     </footer>
   );
 }

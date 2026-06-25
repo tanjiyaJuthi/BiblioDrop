@@ -1,7 +1,9 @@
+import HeroBanner from "@/components/home/HeroBanner";
+
 export default function Home() {
   return (
     <>
-      <h2>Hello ffrom homepage</h2>
+      <HeroBanner />
     </>
   );
 }

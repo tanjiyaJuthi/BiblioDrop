@@ -54,6 +54,7 @@ const SideNav = ({
       { name: "Profile", href: "/dashboard/reader/profile", icon: Users },
       { name: "Reading Lists", href: "/dashboard/reader/reading-list", icon: ShoppingBag },
       { name: "Wishlist", href: "/dashboard/reader/wish-list", icon: Heart },
+      { name: "Reviews", href: "/dashboard/reader/reviews", icon: Package },
       { name: "Deliveris", href: "/dashboard/reader/delivery", icon: ShoppingCart },
     ],
 
@@ -61,7 +62,6 @@ const SideNav = ({
       { name: "Dashboard", href: "/dashboard/librarian", icon: Settings },
       { name: "Profile", href: "/dashboard/librarian/profile", icon: Users },
       { name: "Books", href: "/dashboard/librarian/books", icon: Store },
-      { name: "Inventory", href: "/dashboard/librarian/inventory", icon: Package },
       { name: "Deliveris", href: "/dashboard/librarian/delivery", icon: ShoppingCart },
     ],
 
