@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-const NoBooks = () => {
+const NoData = () => {
     return (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#ef0161]/30 bg-[#ef0161]/3 py-20 px-6 text-center">
             <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-xl bg-[#ef0161]/10">
@@ -20,9 +20,9 @@ const NoBooks = () => {
                 </svg>
             </div>
 
-            <h3 className="text-2xl font-bold text-gray-900">No Books Available</h3>
+            <h3 className="text-2xl font-bold text-gray-900">No Data Available</h3>
 
-            <p className="mt-3 max-w-md text-gray-500">We haven't added any books to the library yet. Check back later for new arrivals and featured collections.</p>
+            <p className="mt-3 max-w-md text-gray-500">We haven't added any data to the library yet. Check back later for new arrivals and featured collections.</p>
 
             <Link
                 href="/books"
@@ -40,4 +40,4 @@ const NoBooks = () => {
     );
 };
 
-export default NoBooks;
+export default NoData;

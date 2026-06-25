@@ -33,6 +33,10 @@ export default function Navbar() {
       href: "/books",
     },
     {
+      label: "All Categories",
+      href: "/categories",
+    },
+    {
       label: "Contact Us",
       href: "/contact",
     }
@@ -58,7 +62,7 @@ export default function Navbar() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
+                      className={`rounded-xl px-4 py-2 text-[12px] lg:text-[16px] font-medium transition ${
                         isActive
                           ? "text-[#ef0161]"
                           : "hover:text-[#ef0161]"

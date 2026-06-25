@@ -4,19 +4,11 @@ import Link from "next/link";
 
 const HeroBanner = () => {
   return (
-    <section className="relative overflow-hidden bg-linear-to-br from-[#fff0f6] via-white to-[#ffe4ef]">
-      {/* Background Blur Effects */}
-      <div className="absolute -top-20 -left-20 h-72 w-72 rounded-full bg-[#ef0161]/20 blur-3xl" />
-      <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#ef0161]/15 blur-3xl" />
-
+    <section className="relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-5 lg:px-0 py-10 lg:py-20">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           {/* Content */}
           <div className="space-y-8">
-            <span className="inline-flex items-center rounded-xl bg-[#ef0161]/10 px-4 py-2 text-sm font-medium text-[#ef0161]">
-              📚 Books Delivered To Your Doorstep
-            </span>
-
             <h1 className="text-5xl font-bold leading-tight text-gray-900 md:text-7xl">
               Your Local Library, <span className="block text-[#ef0161]">Delivered</span>
             </h1>

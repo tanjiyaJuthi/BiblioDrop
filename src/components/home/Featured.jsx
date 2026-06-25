@@ -147,7 +147,7 @@ const Featured = () => {
   }, []);
 
   return (
-    <section className="w-full py-20 px-5 lg:px-0 max-w-7xl mx-auto font-sans antialiased">
+    <section className="w-full pt-5 pb-20 px-5 lg:px-0 max-w-7xl mx-auto font-sans antialiased">
       
       {/* Header Panel Layout */}
       <div className="flex items-center justify-between mb-10">

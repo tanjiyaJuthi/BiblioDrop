@@ -20,6 +20,7 @@ import {
 
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
+import Link from "next/link";
 
 const BooksPage = () => {
     const router = useRouter();
@@ -172,7 +173,7 @@ const BooksPage = () => {
                     Books
                 </Card.Title>
 
-                <Button
+                <Link
                     className="h-10 px-5 
                     rounded-xl 
                     text-white
@@ -180,15 +181,11 @@ const BooksPage = () => {
                     hover:bg-[#5d1bb6]
                     transition-all
                     flex items-center gap-2"
-                    onPress={() =>
-                        router.push(
-                            "/dashboard/librarian/books/add"
-                        )
-                    }
+                    href="/dashboard/librarian/books/add"
                 >
                     <Plus size={17}/>
                     Add Book
-                </Button>
+                </Link>
             </div>
 
             <Table className="bg-[#ef0161]/10 rounded-xl">

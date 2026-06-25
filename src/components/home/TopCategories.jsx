@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import NoData from "../NoData";
 
 const TopCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -60,9 +62,9 @@ const TopCategories = () => {
                   </span>
                 </div>
 
-                <h3 className="mt-5 text-center text-lg font-semibold text-gray-900 capitalize transition-colors group-hover:text-[#ef0161]">
+                <Link href={`/categories/${category._id}`} className="mt-5 text-center text-lg font-semibold text-gray-900 capitalize transition-colors group-hover:text-[#ef0161]">
                   {category.name} ({category.bookCount})
-                </h3>
+                </Link>
 
                 {category.description && (
                   <p className="mt-1 text-center text-sm text-gray-500 line-clamp-2">
@@ -71,6 +73,8 @@ const TopCategories = () => {
                 )}
               </div>
             ))}
+
+            {categories.length === 0 && <NoData />}
           </div>
         </div>
       </div>
