@@ -14,10 +14,10 @@ const Book = ({ book }) => {
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
-                {/* Availability Badge */}
-                {book.status === 'Checked Out' && (
+                {/* Category Badge */}
+                {book.category?.name && (
                     <span className="absolute right-4 top-4 rounded-lg bg-[#ef0161] px-3 py-1 text-xs font-semibold text-white">
-                        Unavailable
+                    {book.category.name}
                     </span>
                 )}
             </div>
@@ -49,7 +49,11 @@ const Book = ({ book }) => {
                     className="relative overflow-hidden h-9.5 px-6 text-sm font-semibold text-white rounded-xl bg-[#ef0161] group flex items-center"
                   >
                     <span className="relative z-10">
-                      View Book
+                        {book.status === 'Available' && (
+                            <span className="absolute right-4 top-4 rounded-lg bg-[#ef0161] px-3 py-1 text-xs font-semibold text-white">
+                                Unavailable
+                            </span>
+                        )}
                     </span>
 
                     <span
