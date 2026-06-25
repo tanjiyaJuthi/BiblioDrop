@@ -17,11 +17,8 @@ const HeroBanner = () => {
               📚 Books Delivered To Your Doorstep
             </span>
 
-            <h1 className="text-5xl font-extrabold leading-tight text-gray-900 md:text-6xl">
-              Your Local Library,
-              <span className="block text-[#ef0161]">
-                Delivered
-              </span>
+            <h1 className="text-5xl font-bold leading-tight text-gray-900 md:text-7xl">
+              Your Local Library, <span className="block text-[#ef0161]">Delivered</span>
             </h1>
 
             <p className="max-w-xl text-lg text-gray-600">
