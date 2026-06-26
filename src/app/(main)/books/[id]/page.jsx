@@ -108,6 +108,8 @@ const BookDetailPage = () => {
     const data =
       await res.json();
 
+      console.log(data);
+
     if (data.success) {
       window.location.href =
         data.url;
