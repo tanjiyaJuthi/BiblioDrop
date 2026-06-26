@@ -218,7 +218,7 @@ const Featured = () => {
         }}
         >
           <div className="max-w-7xl mx-auto">
-            {categories.length === 0 && <NoData />}
+            {books.length === 0 && <NoData />}
           </div>
         {books.map((book) => (
           <SwiperSlide key={book._id}>
