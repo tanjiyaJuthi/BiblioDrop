@@ -86,38 +86,34 @@ const BookDetailPage = () => {
   const isOwner = user?._id === book?.librarianId?._id;
   const isUnavailable = book?.status === 'Checked Out';
 
-  const handleDelivery = async () => {
-  try {
-    const { data: tokenData } = await authClient.token();
+  const handleTransaction = async () => {
+    try {
+      const { data: tokenData } = await authClient.token();
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/transaction/checkout`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenData.token}`,
-        },
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/transaction/checkout`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenData.token}`,
+          },
 
-        body: JSON.stringify({
-          bookId: book._id,
-        }),
+          body: JSON.stringify({
+            bookId: book._id,
+          }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        window.location.href = data.url;
       }
-    );
-
-    const data =
-      await res.json();
-
-      console.log(data);
-
-    if (data.success) {
-      window.location.href =
-        data.url;
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
   return (
     <section className="w-full min-h-screen font-sans antialiased">
@@ -220,7 +216,7 @@ const BookDetailPage = () => {
             <div className="pt-4 flex flex-wrap gap-4 items-center">
               {!isOwner && (
                 <Button
-                  onClick={handleDelivery}
+                  onClick={handleTransaction}
                   disabled={isUnavailable}
                   className={`h-9.5 rounded-xl px-8 text-sm font-semibold text-white transition shadow-sm ${
                     isUnavailable ? 'cursor-not-allowed bg-gray-300' : 'bg-[#ef0161]'
