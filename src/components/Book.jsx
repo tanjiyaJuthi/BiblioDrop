@@ -47,10 +47,16 @@ const Book = ({ book }) => {
 
                 <Button
                     disabled={book.status !== "Available"}
-                    className="relative overflow-hidden h-9.5 px-6 text-sm font-semibold text-white rounded-xl flex items-center disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-70 bg-[#ef0161]"
-                    >
+                    className={`relative overflow-hidden h-9.5 px-5 text-sm font-semibold text-white rounded-xl flex items-center ${
+                        book.status === "Available"
+                            ? "bg-[#ef0161]"
+                            : "bg-[#ef0161]/50"
+                    }`}
+                >
                     <span className="relative z-10">
-                        {book.status === "Available" ? "Available" : "Checked Out"}
+                        {book.status === "Available"
+                            ? "Available"
+                            : "Checked Out"}
                     </span>
                 </Button>
             </div>
