@@ -30,8 +30,8 @@ const CategoryPage = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
-      <div className="max-w-7xl mx-auto my-20">
-        <NoData />
+      <div className="max-w-7xl mx-auto">
+        {categories.length === 0 && <NoData />}
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

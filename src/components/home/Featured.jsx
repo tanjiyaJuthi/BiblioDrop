@@ -220,11 +220,11 @@ const Featured = () => {
           <div className="max-w-7xl mx-auto">
             {books.length === 0 && <NoData />}
           </div>
-        {books.map((book) => (
-          <SwiperSlide key={book._id}>
-            <Book book={book} />
-          </SwiperSlide>
-        ))}
+          {books.map((book) => (
+            <SwiperSlide key={book._id}>
+              <Book book={book} />
+            </SwiperSlide>
+          ))}
       </Swiper>
 
     </section>
