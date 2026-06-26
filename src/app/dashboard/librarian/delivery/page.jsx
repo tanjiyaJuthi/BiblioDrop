@@ -3,7 +3,7 @@
 import { authClient } from "@/lib/auth-client";
 import { Button, Card, Table } from "@heroui/react";
 import Image from "next/image";
-import { CheckCheck, Truck } from "lucide-react";
+import { CheckCheck, Truck, Ban } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const DeliveryPage = () => {
@@ -63,6 +63,33 @@ const DeliveryPage = () => {
             fetchDeliveries();
         } catch (err) {
             console.error(err);
+        }
+    };
+
+    const cancelDelivery = async (id) => {
+        try {
+            const { data: tokenData } = await authClient.token();
+
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery/${id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${tokenData?.token}`,
+                    },
+                }
+            );
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert(data.message);
+                return;
+            }
+
+            fetchDeliveries();
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -194,46 +221,53 @@ const DeliveryPage = () => {
                             </Table.Cell>
 
                             <Table.Cell>
-                            <div className="flex gap-2">
-                                {delivery.deliveryStatus ===
-                                "Pending" && (
-                                <Button
-                                    size="sm"
-                                    className="rounded-lg text-white bg-[#ef0161] hover:bg-[#5d1bb6]"
-                                    onPress={() =>
-                                    updateStatus(
-                                        delivery._id,
-                                        "Dispatched"
-                                    )
-                                    }
-                                >
-                                    <Truck size={15} />
-                                </Button>
-                                )}
+                                <div className="flex gap-2">
 
-                                {delivery.deliveryStatus ===
-                                "Dispatched" && (
-                                <Button
-                                    size="sm"
-                                    className="rounded-lg text-white bg-[#ef0161] hover:bg-[#5d1bb6]"
-                                    onPress={() =>
-                                    updateStatus(
-                                        delivery._id,
-                                        "Delivered"
-                                    )
-                                    }
-                                >
-                                    <CheckCheck size={15} />
-                                </Button>
-                                )}
+                                    {/* Status Button */}
+                                    <Button
+                                        size="sm"
+                                        className="rounded-lg text-white bg-[#ef0161]"
+                                        isDisabled={delivery.deliveryStatus === "Delivered"}
+                                        onPress={() => {
+                                            const nextStatus =
+                                                delivery.deliveryStatus === "Pending"
+                                                    ? "Dispatched"
+                                                    : "Delivered";
 
-                                {delivery.deliveryStatus ===
-                                "Delivered" && (
-                                <span className="text-green-600 text-sm font-semibold">
-                                    Completed
-                                </span>
-                                )}
-                            </div>
+                                            updateStatus(delivery._id, nextStatus);
+                                        }}
+                                    >
+                                        {delivery.deliveryStatus === "Pending" && (
+                                            <>
+                                                <Truck size={15} />
+                                                <span className="ml-1">Dispatch</span>
+                                            </>
+                                        )}
+
+                                        {delivery.deliveryStatus === "Dispatched" && (
+                                            <>
+                                                <CheckCheck size={15} />
+                                                <span className="ml-1">Deliver</span>
+                                            </>
+                                        )}
+
+                                        {delivery.deliveryStatus === "Delivered" && (
+                                            "Completed"
+                                        )}
+                                    </Button>
+
+                                    {/* Cancel Button */}
+                                    <Button
+                                        size="sm"
+                                        color="danger"
+                                        variant="flat"
+                                        isDisabled={delivery.deliveryStatus !== "Pending"}
+                                        onPress={() => cancelDelivery(delivery._id)}
+                                    >
+                                        <Ban size={15} />
+                                    </Button>
+
+                                </div>
                             </Table.Cell>
                         </Table.Row>
                         ))

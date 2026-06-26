@@ -3,6 +3,7 @@
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { Card, Table } from "@heroui/react";
 
 const DeliveryPage = () => {
     const [deliveries, setDeliveries] = useState([]);
@@ -32,93 +33,132 @@ const DeliveryPage = () => {
         }
     };
 
+    const statusColors = {
+        Pending: "bg-yellow-100 text-yellow-700",
+        Dispatched: "bg-blue-100 text-blue-700",
+        Delivered: "bg-green-100 text-green-700",
+        };
+    
     return (
-        <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-2xl font-bold mb-6">
-                My Deliveries
-            </h2>
+  <Card className="rounded-xl p-6">
+    <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <Card.Title className="text-xl">
+        My Deliveries
+      </Card.Title>
 
-            <div className="overflow-x-auto">
-                <table className="min-w-full">
-                    <thead className="bg-gray-100">
-                        <tr>
-                            <th className="px-4 py-3 text-left">
-                                Book
-                            </th>
+      <div className="text-sm text-gray-500">
+        Total: {deliveries.length}
+      </div>
 
-                            <th className="px-4 py-3">
-                                Delivery Fee
-                            </th>
+      <div className="text-sm text-gray-500">
+        Pending: {
+          deliveries.filter(
+            (d) => d.deliveryStatus === "Pending"
+          ).length
+        }
+      </div>
 
-                            <th className="px-4 py-3">
-                                Request Date
-                            </th>
+      <div className="text-sm text-gray-500">
+        Dispatched: {
+          deliveries.filter(
+            (d) => d.deliveryStatus === "Dispatched"
+          ).length
+        }
+      </div>
 
-                            <th className="px-4 py-3">
-                                Status
-                            </th>
-                        </tr>
-                    </thead>
+      <div className="text-sm text-gray-500">
+        Delivered: {
+          deliveries.filter(
+            (d) => d.deliveryStatus === "Delivered"
+          ).length
+        }
+      </div>
+    </div>
 
-                    <tbody>
-                        {deliveries.map((item) => (
-                            <tr
-                                key={item._id}
-                                className="border-b"
-                            >
-                                <td className="px-4 py-3 flex items-center gap-3">
-                                    <Image
-                                        width={100}
-                                        height={100}
-                                        alt={item.bookId.title}
-                                        src={item.bookId.coverImage}
-                                        className="w-14 h-20 object-cover rounded"
-                                    />
+    <Table className="bg-[#ef0161]/10 rounded-xl">
+      <Table.ScrollContainer>
+        <Table.Content
+          aria-label="My Deliveries"
+          className="min-w-[900px]"
+        >
+          <Table.Header>
+            <Table.Column isRowHeader>
+              Book
+            </Table.Column>
 
-                                    <div>
-                                        <p className="font-semibold">
-                                            {item.bookId.title}
-                                        </p>
+            <Table.Column>
+              Delivery Fee
+            </Table.Column>
 
-                                        <p className="text-sm text-gray-500">
-                                            {item.bookId.author}
-                                        </p>
-                                    </div>
-                                </td>
+            <Table.Column>
+              Request Date
+            </Table.Column>
 
-                                <td className="text-center">
-                                    ${item.deliveryFee}
-                                </td>
+            <Table.Column>
+              Status
+            </Table.Column>
+          </Table.Header>
 
-                                <td className="text-center">
-                                    {new Date(
-                                        item.requestDate
-                                    ).toLocaleDateString()}
-                                </td>
+          <Table.Body>
+            {deliveries.length === 0 ? (
+              <Table.Row>
+                <Table.Cell colSpan={4}>
+                  No deliveries found
+                </Table.Cell>
+              </Table.Row>
+            ) : (
+              deliveries.map((item) => (
+                <Table.Row key={item._id}>
+                  <Table.Cell>
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={item.bookId.coverImage}
+                        alt={item.bookId.title}
+                        width={55}
+                        height={75}
+                        className="rounded object-cover"
+                      />
 
-                                <td className="text-center">
-                                    <span
-                                        className={`px-3 py-1 rounded-full text-sm
-                                        ${
-                                            item.deliveryStatus ===
-                                            "Pending"
-                                                ? "bg-yellow-100 text-yellow-700"
-                                                : item.deliveryStatus ===
-                                                "Dispatched"
-                                                ? "bg-blue-100 text-blue-700"
-                                                : "bg-green-100 text-green-700"
-                                        }`}
-                                    >
-                                        {item.deliveryStatus}
-                                    </span>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+                      <div>
+                        <p className="font-semibold">
+                          {item.bookId.title}
+                        </p>
+
+                        <p className="text-xs text-gray-500">
+                          {item.bookId.author}
+                        </p>
+                      </div>
+                    </div>
+                  </Table.Cell>
+
+                  <Table.Cell>
+                    ${Number(item.deliveryFee).toFixed(2)}
+                  </Table.Cell>
+
+                  <Table.Cell>
+                    {new Date(
+                      item.requestDate
+                    ).toLocaleDateString()}
+                  </Table.Cell>
+
+                  <Table.Cell>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        statusColors[item.deliveryStatus]
+                      }`}
+                    >
+                      {item.deliveryStatus}
+                    </span>
+                  </Table.Cell>
+                </Table.Row>
+              ))
+            )}
+          </Table.Body>
+        </Table.Content>
+      </Table.ScrollContainer>
+    </Table>
+  </Card>
+);
 };
 
 export default DeliveryPage;
