@@ -9,7 +9,7 @@ export default function PaymentSuccess() {
   useEffect(() => {
     const timer = setTimeout(() => {
       router.push('/dashboard/reader/delivery');
-    }, 3000);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [router]);

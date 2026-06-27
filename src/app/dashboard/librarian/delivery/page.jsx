@@ -97,6 +97,7 @@ const DeliveryPage = () => {
         Pending: "bg-yellow-100 text-yellow-700",
         Dispatched: "bg-blue-100 text-blue-700",
         Delivered: "bg-green-100 text-green-700",
+        Returned: "bg-gray-100 text-gray-700",
     };
 
     return (
@@ -227,12 +228,14 @@ const DeliveryPage = () => {
                                     <Button
                                         size="sm"
                                         className="rounded-lg text-white bg-[#ef0161]"
-                                        isDisabled={delivery.deliveryStatus === "Delivered"}
+                                        isDisabled={delivery.deliveryStatus === "Returned"}
                                         onPress={() => {
                                             const nextStatus =
                                                 delivery.deliveryStatus === "Pending"
                                                     ? "Dispatched"
-                                                    : "Delivered";
+                                                    : delivery.deliveryStatus === "Dispatched"
+                                                    ? "Delivered"
+                                                    : "Returned";
 
                                             updateStatus(delivery._id, nextStatus);
                                         }}
@@ -252,6 +255,13 @@ const DeliveryPage = () => {
                                         )}
 
                                         {delivery.deliveryStatus === "Delivered" && (
+                                            <>
+                                                <CheckCheck size={15} />
+                                                <span className="ml-1">Return</span>
+                                            </>
+                                        )}
+
+                                        {delivery.deliveryStatus === "Returned" && (
                                             "Completed"
                                         )}
                                     </Button>

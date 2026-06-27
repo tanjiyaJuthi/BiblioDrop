@@ -5,6 +5,8 @@ import { authClient } from "@/lib/auth-client";
 import { Button, Card, Table } from "@heroui/react";
 import { Pencil, Trash2, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Loading from "@/app/loading";
+import Link from "next/link";
 
 const ReviewPage = () => {
     const router = useRouter();
@@ -74,44 +76,74 @@ const ReviewPage = () => {
         }
     };
 
-    const deleteComment = async (id) => {
+    const reviewsMap = new Map();
+
+    // Add comments
+    comments.forEach((comment) => {
+        reviewsMap.set(comment.bookId._id, {
+            book: comment.bookId,
+            user: comment.userId,
+            commentId: comment._id,
+            comment: comment.commentText,
+            ratingId: null,
+            rating: 0,
+            createdAt: comment.createdAt,
+        });
+    });
+
+    // Add ratings
+    ratings.forEach((rating) => {
+        const existing = reviewsMap.get(rating.bookId._id);
+
+        if (existing) {
+            existing.ratingId = rating._id;
+            existing.rating = rating.rating;
+        } else {
+            reviewsMap.set(rating.bookId._id, {
+            book: rating.bookId,
+            user: rating.userId,
+            commentId: null,
+            comment: "",
+            ratingId: rating._id,
+            rating: rating.rating,
+            createdAt: rating.createdAt,
+            });
+        }
+    });
+
+    const reviews = Array.from(reviewsMap.values());
+
+    const deleteReview = async (review) => {
         const { data: tokenData } = await authClient.token();
 
-        const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/${id}`,
+        await Promise.all([
+            fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/${review.commentId}`,
             {
                 method: "DELETE",
                 headers: {
-                    Authorization: `Bearer ${tokenData.token}`,
+                Authorization: `Bearer ${tokenData.token}`,
                 },
             }
-        );
-
-        if (res.ok) {
-            setComments((prev) =>
-                prev.filter((item) => item._id !== id)
-            );
-        }
-    };
-
-    const deleteRating = async (id) => {
-        const { data: tokenData } = await authClient.token();
-
-        const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/rating/${id}`,
+            ),
+            fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/rating/${review.ratingId}`,
             {
                 method: "DELETE",
                 headers: {
-                    Authorization: `Bearer ${tokenData.token}`,
+                Authorization: `Bearer ${tokenData.token}`,
                 },
             }
+            ),
+        ]);
+
+        setComments(prev =>
+            prev.filter(item => item._id !== review.commentId)
         );
 
-        if (res.ok) {
-            setRatings((prev) =>
-                prev.filter((item) => item._id !== id)
-            );
-        }
+        setRatings(prev =>
+            prev.filter(item => item._id !== review.ratingId)
+        );
     };
 
     return (
@@ -134,7 +166,7 @@ const ReviewPage = () => {
                     >
                         <Table.Header>
                             <Table.Column isRowHeader >Book</Table.Column>
-                            <Table.Column>User</Table.Column>
+                            <Table.Column>Rating</Table.Column>
                             <Table.Column>Comment</Table.Column>
                             <Table.Column>Date</Table.Column>
                             <Table.Column>Actions</Table.Column>
@@ -144,112 +176,28 @@ const ReviewPage = () => {
                             {loadingComments ? (
                                 <Table.Row>
                                     <Table.Cell colSpan={5}>
-                                        Loading...
+                                        <Loading />
                                     </Table.Cell>
                                 </Table.Row>
                             ) : comments.length === 0 ? (
                                 <Table.Row>
                                     <Table.Cell colSpan={5}>
-                                        No comments found
+                                        No data found
                                     </Table.Cell>
                                 </Table.Row>
                             ) : (
-                                comments.map((comment) => (
-                                    <Table.Row key={comment._id}>
-                                        <Table.Cell>{comment.bookId?.title}</Table.Cell>
-                                        <Table.Cell>{comment.userId?.name}</Table.Cell>
-                                        <Table.Cell>{comment.commentText}</Table.Cell>
+                                reviews.map((review) => (
+                                    <Table.Row key={review.book._id}>
                                         <Table.Cell>
-                                            {new Date(
-                                                comment.createdAt
-                                            ).toLocaleDateString()}
-                                        </Table.Cell>
-
-                                        <Table.Cell>
-                                            <div className="flex gap-2">
-                                                <Button
-                                                    size="sm"
-                                                    className="bg-[#ef0161] text-white"
-                                                    onPress={() =>
-                                                        router.push(
-                                                            `/books/${comment.bookId._id}?editComment=${comment._id}`
-                                                        )
-                                                    }
-                                                >
-                                                    <Pencil size={15} />
-                                                </Button>
-
-                                                <Button
-                                                    size="sm"
-                                                    color="danger"
-                                                    onPress={() =>
-                                                        deleteComment(
-                                                            comment._id
-                                                        )
-                                                    }
-                                                >
-                                                    <Trash2 size={15} />
-                                                </Button>
-                                            </div>
-                                        </Table.Cell>
-                                    </Table.Row>
-                                ))
-                            )}
-                        </Table.Body>
-                    </Table.Content>
-                </Table.ScrollContainer>
-            </Table>
-
-            <div className="flex justify-between items-center mb-6 mt-10">
-                <h2>Ratings</h2>
-
-                <span className="text-sm text-gray-500">
-                    Total: {ratings.length}
-                </span>
-            </div>
-
-            <Table className="bg-[#ef0161]/10 rounded-xl">
-                <Table.ScrollContainer>
-                    <Table.Content
-                        aria-label="Ratings"
-                        className=""
-                    >
-                        <Table.Header>
-                            <Table.Column isRowHeader>Book</Table.Column>
-                            <Table.Column>User</Table.Column>
-                            <Table.Column>Rating</Table.Column>
-                            <Table.Column>Date</Table.Column>
-                            <Table.Column>Actions</Table.Column>
-                        </Table.Header>
-
-                        <Table.Body>
-                            {loadingRatings ? (
-                                <Table.Row>
-                                    <Table.Cell colSpan={5}>
-                                        Loading...
-                                    </Table.Cell>
-                                </Table.Row>
-                            ) : ratings.length === 0 ? (
-                                <Table.Row>
-                                    <Table.Cell colSpan={5}>
-                                        No ratings found
-                                    </Table.Cell>
-                                </Table.Row>
-                            ) : (
-                                ratings.map((rating) => (
-                                    <Table.Row key={rating._id}>
-                                        <Table.Cell>
-                                            {rating.bookId?.title}
-                                        </Table.Cell>
-
-                                        <Table.Cell>
-                                            {rating.userId?.name}
+                                            <Link href={`/books/${review.book._id}`}>
+                                                {review.book.title}
+                                            </Link>
                                         </Table.Cell>
 
                                         <Table.Cell>
                                             <div className="flex items-center gap-1">
                                                 {Array.from({
-                                                    length: rating.rating,
+                                                    length: review.rating,
                                                 }).map((_, index) => (
                                                     <Star
                                                         key={index}
@@ -261,10 +209,10 @@ const ReviewPage = () => {
                                             </div>
                                         </Table.Cell>
 
+                                        <Table.Cell>{review.comment}</Table.Cell>
+
                                         <Table.Cell>
-                                            {new Date(
-                                                rating.createdAt
-                                            ).toLocaleDateString()}
+                                        {new Date(review.createdAt).toLocaleDateString()}
                                         </Table.Cell>
 
                                         <Table.Cell>
@@ -273,9 +221,7 @@ const ReviewPage = () => {
                                                     size="sm"
                                                     className="bg-[#ef0161] text-white"
                                                     onPress={() =>
-                                                        router.push(
-                                                            `/books/${rating.bookId._id}?editRating=${rating._id}`
-                                                        )
+                                                        router.push(`/books/${review.book._id}?edit=true`)
                                                     }
                                                 >
                                                     <Pencil size={15} />
@@ -284,11 +230,7 @@ const ReviewPage = () => {
                                                 <Button
                                                     size="sm"
                                                     color="danger"
-                                                    onPress={() =>
-                                                        deleteRating(
-                                                            rating._id
-                                                        )
-                                                    }
+                                                    onPress={() => deleteReview(review)}
                                                 >
                                                     <Trash2 size={15} />
                                                 </Button>

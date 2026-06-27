@@ -5,6 +5,8 @@ import { Button, Card } from "@heroui/react";
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import NoData from "@/components/NoData";
 
 const ReadingListPage = () => {
     const [books, setBooks] = useState([]);
@@ -74,7 +76,7 @@ const ReadingListPage = () => {
 
             {books.length === 0 ? (
                 <div className="text-center py-10 text-gray-500">
-                    No books in your reading list.
+                    <NoData />
                 </div>
             ) : (
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -92,9 +94,11 @@ const ReadingListPage = () => {
                             />
 
                             <div className="p-4">
-                                <h3 className="font-semibold">
+                                <Link
+                                    href={`/books/${item.bookId._id}`} className="font-semibold"
+                                >
                                     {item.bookId.title}
-                                </h3>
+                                </Link>
 
                                 <p className="text-sm text-gray-500">
                                     {item.bookId.author}

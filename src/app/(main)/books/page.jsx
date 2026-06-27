@@ -27,7 +27,7 @@ const BooksPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
-    }, 1000);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [search]);

@@ -4,12 +4,9 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  Star,
   Edit,
   Trash2,
   EyeOff,
-  ArrowLeft,
-  ArrowRight
 } from 'lucide-react';
 
 import Loading from '@/app/loading';
@@ -22,7 +19,8 @@ import ReviewList from '@/components/ReviewList';
 import Rating from '@/components/Rating';
 
 const BookDetailPage = () => {
-  const { id } = useParams();
+  const { data: session } = useSession();
+  const user = session?.user;
 
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,13 +28,11 @@ const BookDetailPage = () => {
   const [comments, setComments] = useState([]);
   const [ratings, setRatings] = useState([]);
 
-  const { data: session } = useSession();
-  const user = session?.user;
+  const [myComment, setMyComment] = useState(null);
+  const [myRating, setMyRating] = useState(null);
+  const hasReviewed = !!myComment && !!myRating;
 
-  useEffect(() => {
-    fetchBook();
-    fetchReviews();
-  }, [id]);
+  const { id } = useParams();
 
   const fetchBook = async () => {
     try {
@@ -55,38 +51,106 @@ const BookDetailPage = () => {
   };
 
   const fetchReviews = async () => {
-  try {
-    const [commentsRes, ratingsRes] = await Promise.all([
-      fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/book/${id}`
-      ),
-      fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/rating/book/${id}`
-      ),
+    try {
+      const [commentsRes, ratingsRes] = await Promise.all([
+        fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/book/${id}`
+        ),
+        fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/rating/book/${id}`
+        ),
+      ]);
+
+      const commentsData = await commentsRes.json();
+      const ratingsData = await ratingsRes.json();
+
+      if (commentsData.success) {
+        setComments(commentsData.data);
+      }
+
+      if (ratingsData.success) {
+        setRatings(ratingsData.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBook();
+    fetchReviews();
+  }, [id]);
+
+  const fetchMyReview = async () => {
+    const { data: tokenData } = await authClient.token();
+
+    const [commentRes, ratingRes] = await Promise.all([
+        fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/book/${id}/me`,
+            {
+                headers: {
+                    Authorization: `Bearer ${tokenData.token}`,
+                },
+            }
+        ),
+        fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/rating/book/${id}/me`,
+            {
+                headers: {
+                    Authorization: `Bearer ${tokenData.token}`,
+                },
+            }
+        ),
     ]);
 
-    const commentsData = await commentsRes.json();
-    const ratingsData = await ratingsRes.json();
+    const comment = await commentRes.json();
+    const rating = await ratingRes.json();
 
-    if (commentsData.success) {
-      setComments(commentsData.data);
-    }
+    setMyComment(comment.data);
+    setMyRating(rating.data);
+  };
 
-    if (ratingsData.success) {
-      setRatings(ratingsData.data);
+  useEffect(() => {
+    if (user?.role === "reader") {
+        fetchMyReview();
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
+  }, [id, user]);
+
+  const [canReview, setCanReview] = useState(false);
+  
+  const checkPermission = async () => {
+    try {
+      const { data: tokenData } = await authClient.token();
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/review/permission/${book._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenData.token}`,
+          },
+      });
+
+      const data = await res.json();
+      setCanReview(data.canReview);
+    } catch (err) {
+        console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    if (!user || !book?._id) return;
+    checkPermission();
+  }, [user, book]);
+
 
   if (loading) return <Loading />;
   if (!book) return <div className="max-w-7xl mx-auto my-20"><NoData /></div>;
-
+  
   const isOwner = user?._id === book?.librarianId?._id;
-  const isUnavailable = book?.status === 'Checked Out';
+  const isUnavailable = !book?.isAvailable;
 
   const handleTransaction = async () => {
+    if (isUnavailable) return;
+
     try {
       const { data: tokenData } = await authClient.token();
 
@@ -219,10 +283,14 @@ const BookDetailPage = () => {
                   onClick={handleTransaction}
                   disabled={isUnavailable}
                   className={`h-9.5 rounded-xl px-8 text-sm font-semibold text-white transition shadow-sm ${
-                    isUnavailable ? 'cursor-not-allowed bg-gray-300' : 'bg-[#ef0161]'
+                    isUnavailable
+                      ? "cursor-not-allowed bg-gray-300"
+                      : "bg-[#ef0161] hover:bg-[#d90158]"
                   }`}
                 >
-                  Request Delivery (৳{book.deliveryFee})
+                  {isUnavailable
+                    ? "Unavailable"
+                    : `Request Delivery (৳${book.deliveryFee})`}
                 </Button>
               )}
 
@@ -249,15 +317,25 @@ const BookDetailPage = () => {
       </div>
 
       {!isOwner &&
-        user?.role === 'reader' && (
+        user?.role === "reader" &&
+        canReview &&
+        !hasReviewed && (
           <ReviewForm
             bookId={book._id}
-            onSuccess={fetchReviews}
+            comment={myComment}
+            rating={myRating}
+            onSuccess={() => {
+              fetchReviews();
+              fetchMyReview();
+            }}
           />
       )}
 
       <div className={user?.role === 'reader' ? 'mt-20' : ''}>
-        <ReviewList comments={comments} ratings={ratings} />
+        <ReviewList
+          comments={comments}
+          ratings={ratings}
+        />
       </div>              
     </section>
   );

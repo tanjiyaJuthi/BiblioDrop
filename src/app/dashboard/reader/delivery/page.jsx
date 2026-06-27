@@ -4,6 +4,8 @@ import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Card, Table } from "@heroui/react";
+import Link from "next/link";
+import NoData from "@/components/NoData";
 
 const DeliveryPage = () => {
     const [deliveries, setDeliveries] = useState([]);
@@ -24,7 +26,7 @@ const DeliveryPage = () => {
             });
 
             const data = await res.json();
-            console.log(data);
+            // console.log(data);
             if (data.success) {
                 setDeliveries(data.deliveries);
             }
@@ -37,6 +39,7 @@ const DeliveryPage = () => {
         Pending: "bg-yellow-100 text-yellow-700",
         Dispatched: "bg-blue-100 text-blue-700",
         Delivered: "bg-green-100 text-green-700",
+        Returned: "bg-red-100 text-red-700",
         };
     
     return (
@@ -73,13 +76,21 @@ const DeliveryPage = () => {
           ).length
         }
       </div>
+
+      <div className="text-sm text-gray-500">
+        Returned: {
+          deliveries.filter(
+            (d) => d.deliveryStatus === "Returned"
+          ).length
+        }
+      </div>
     </div>
 
     <Table className="bg-[#ef0161]/10 rounded-xl">
       <Table.ScrollContainer>
         <Table.Content
           aria-label="My Deliveries"
-          className="min-w-[900px]"
+          className="min-w-225"
         >
           <Table.Header>
             <Table.Column isRowHeader>
@@ -103,7 +114,7 @@ const DeliveryPage = () => {
             {deliveries.length === 0 ? (
               <Table.Row>
                 <Table.Cell colSpan={4}>
-                  No deliveries found
+                  <NoData />
                 </Table.Cell>
               </Table.Row>
             ) : (
@@ -112,7 +123,7 @@ const DeliveryPage = () => {
                   <Table.Cell>
                     <div className="flex items-center gap-3">
                       <Image
-                        src={item.bookId.coverImage}
+                        src={item.bookId.coverImage || "/images/fallback.jpg"}
                         alt={item.bookId.title}
                         width={55}
                         height={75}
@@ -120,9 +131,9 @@ const DeliveryPage = () => {
                       />
 
                       <div>
-                        <p className="font-semibold">
+                        <Link href={`/books/${item.bookId._id}`} className="font-semibold">
                           {item.bookId.title}
-                        </p>
+                        </Link>
 
                         <p className="text-xs text-gray-500">
                           {item.bookId.author}

@@ -1,13 +1,35 @@
 'use client';
 
-import { useState } from 'react';
 import { Star } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
+import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
 
-const ReviewForm = ({bookId, onSuccess}) => {
+const ReviewForm = ({
+    bookId,
+    isEdit,
+    comment: initialComment,
+    rating: initialRating,
+    onSuccess,
+}) => {
+  const router = useRouter  ();
+
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const [text, setText] = useState("");
+  const [stars, setStars] = useState(0);
+
+  useEffect(() => {
+    if (initialComment) {
+      setComment(initialComment.commentText);
+    }
+
+    if (initialRating) {
+      setRating(initialRating.rating);
+    }
+  }, [initialComment, initialRating]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,48 +44,56 @@ const ReviewForm = ({bookId, onSuccess}) => {
 
       const { data: tokenData } = await authClient.token();
 
+      const isUpdatingComment = !!initialComment;
+      const isUpdatingRating = !!initialRating;
+
       const ratingReq = fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/rating`,
-          {
-            method: "POST",
+        isUpdatingRating
+          ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/rating/${initialRating._id}`
+          : `${process.env.NEXT_PUBLIC_BASE_URL}/api/rating`,
+        {
+            method: isUpdatingRating ? "PATCH" : "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${tokenData?.token}`,
+                Authorization: `Bearer ${tokenData.token}`,
             },
             body: JSON.stringify({
-              bookId,
-              rating,
+                bookId,
+                rating,
             }),
-          }
-        );
+        }
+      );
 
-        const commentReq = fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment`,
-          {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${tokenData?.token}`,
-            },
-            body: JSON.stringify({
-              bookId,
-              commentText: comment,
-            }),
-          }
-        );
+      const commentReq = fetch(
+        isUpdatingComment
+          ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment/${initialComment._id}`
+          : `${process.env.NEXT_PUBLIC_BASE_URL}/api/comment`,
+        {
+            method: isUpdatingComment ? "PATCH" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenData.token}`,
+          },
+          body: JSON.stringify({
+            bookId,
+            commentText: comment,
+          }),
+        }
+      );
 
-        const ratingRes = await ratingReq;
-        const commentRes = await commentReq;
+      const ratingRes = await ratingReq;
+      const commentRes = await commentReq;
 
-        await Promise.all([ratingRes, ratingRes]);
-
-        console.log(await ratingRes.json());
-        console.log(await commentRes.json());
+      await Promise.all([ratingRes.json(), commentRes.json()]);
 
       setRating(0);
-      setComment('');
+      setComment("");
 
-      onSuccess?.();
+      if (isEdit) {
+        router.back();
+      } else {
+        onSuccess?.();
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -147,8 +177,12 @@ const ReviewForm = ({bookId, onSuccess}) => {
             className="rounded-xl bg-[#ef0161] px-5 h-9.5 font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
           >
             {loading
-              ? 'Submitting...'
-              : 'Publish Review'}
+              ? isEdit
+                  ? "Updating..."
+                  : "Submitting..."
+              : isEdit
+                  ? "Update Review"
+                  : "Publish Review"}
           </button>
         </form>
       </div>
