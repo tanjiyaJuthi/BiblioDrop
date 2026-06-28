@@ -1,36 +1,219 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 📚 LexiCart – Online Book Delivery Management System
 
-## Getting Started
+## 🚀 [Live Website](https://lexi-cart.vercel.app)
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📖 Project Overview
+
+**LexiCart** is a modern full-stack online book delivery management platform that connects readers, librarians, and administrators in one ecosystem. Users can browse books, request doorstep delivery through secure Stripe payments, manage their reading history, and leave verified reviews. Librarians can upload and manage book inventories, while administrators oversee users, book approvals, transactions, and platform analytics.
+
+The project demonstrates role-based authentication, secure payment integration, image hosting, JWT authorization, responsive UI design, and real-time dashboard management.
+
+---
+
+## 🎯 Purpose
+
+The primary goal of LexiCart is to modernize traditional library services by allowing readers to borrow books without visiting libraries physically. It provides:
+
+- Easy online book discovery
+- Secure delivery request system
+- Digital library inventory management
+- Role-based dashboards
+- Verified review system
+- Admin monitoring and analytics
+
+---
+
+## ✨ Key Features
+
+### 🔐 Authentication
+
+- Better Auth Authentication
+- Email & Password Login
+- Google Social Login
+- Role Selection (Reader / Librarian)
+- JWT Protected Routes
+- Secure Cookie Authentication
+
+### 📚 Book Management
+
+- Browse all published books
+- Search books by title
+- Filter by category, availability & delivery fee
+- Server-side pagination
+- Book details page
+- Verified reviews
+- Delivery status tracking
+
+### 👤 User Dashboard
+
+- Delivery history
+- Reading list
+- Review management
+- Dashboard statistics
+- Charts & analytics
+
+### 📖 Librarian Dashboard
+
+- Add new books
+- Image upload using ImgBB
+- Manage inventory
+- Delivery request management
+- Earnings overview
+- Pending/Published/Unpublished status management
+
+### 🛡️ Admin Dashboard
+
+- Manage users
+- Change user roles
+- Book approval system
+- Platform-wide inventory management
+- Transaction history
+- Revenue analytics
+- Category charts
+
+### 💳 Payment
+
+- Stripe Checkout Integration
+- Secure delivery fee payment
+- Automatic delivery request creation
+
+### 🎨 UI/UX
+
+- Fully Responsive Design
+- Framer Motion Animations
+- Skeleton Loading
+- Global Loading Spinner
+- Custom 404 Page
+- Error Boundary
+- Toast Notifications
+- Modern Dashboard Layout
+- Mobile Friendly
+
+---
+
+# 🔒 Environment Variables
+
+Create a `.env` file in the root directory.
+
+```env
+BETTER_AUTH_SECRET=your_better_auth_secret
+
+BETTER_AUTH_URL=your_better_auth_url
+
+MONGO_URI=your_mongodb_uri
+
+GOOGLE_CLIENT_ID=your_google_client_id
+
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+AUTH_DB_NAME=your_database_name
+
+NEXT_PUBLIC_BASE_URL=http://localhost:8000
+
+NEXT_PUBLIC_IMAGE_UPLOAD_API=your_imbb_api
+
+NEXT_PUBLIC_IMBB_KEY=your_imbb_api_key
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🛠️ Technologies Used
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Frontend
 
-## Learn More
+- React
+- React Router DOM
+- Tailwind CSS
+- DaisyUI
+- Framer Motion
+- Axios
+- TanStack React Query
+- React Hook Form
+- Recharts
+- React Hot Toast
+- SweetAlert2
+- React Icons
+- Stripe React SDK
 
-To learn more about Next.js, take a look at the following resources:
+### Backend
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Node.js
+- Express.js
+- MongoDB Atlas
+- JWT
+- Better Auth
+- Cookie Parser
+- CORS
+- dotenv
+- Stripe API
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📦 NPM Packages Used
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Client
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- react
+- framer-motion
+- recharts
+- react-icons
+- react-hot-toast
+- tailwindcss
+
+### Server
+
+- express
+- mongoose
+- jsonwebtoken
+- cookie-parser
+- cors
+- dotenv
+- stripe
+- better-auth
+
+---
+
+## 🔒 Security Features
+
+- Environment variables for sensitive credentials
+- JWT authentication
+- Protected API routes
+- Cookie-based authorization
+- MongoDB credentials secured
+- Better Auth session management
+- Stripe secure payment gateway
+
+---
+
+## 📂 Main Functionalities
+
+- Role-Based Authentication
+- Book Browsing
+- Delivery Requests
+- Stripe Payment
+- Book Approval Workflow
+- Inventory Management
+- Verified Reviews
+- Transaction Management
+- Dashboard Analytics
+- Image Upload with ImgBB
+
+---
+
+## 👨‍💻 Admin Credentials
+
+**Email:** admin@gmail.com
+
+**Password:** Admin@123
+
+---
+
+## 📞 Contact
+
+If you have any questions or suggestions, feel free to reach out through GitHub or tanjiya098@gmail.com
+
+---
+
+### ⭐ Thank you for visiting LexiCart!

@@ -35,7 +35,7 @@ const BooksPage = () => {
     const fetchBooks = async () => {
         try {
             const { data: tokenData } = await authClient.token();
-            const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/dashboard`;
+            const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/my-book`;
 
             const res = await fetch(url, {
                 method: "GET",
