@@ -1,23 +1,28 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Book from '@/components/Book';
-import { Search } from 'lucide-react';
-import Loading from '@/app/loading';
-import NoData from '@/components/NoData';
-import Pagination from '@/components/Pagination';
+import Loading from "@/app/loading";
+import Book from "@/components/Book";
+import NoData from "@/components/NoData";
+import Pagination from "@/components/Pagination";
+import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Label, ListBox, Select } from "@heroui/react";
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
   const [categories, setCategories] = useState([]);
 
+  const [status, setStatus] = useState("");
+  const [minFee, setMinFee] = useState("");
+  const [maxFee, setMaxFee] = useState("");
+
   const [loading, setLoading] = useState(true);
 
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  const [category, setCategory] = useState('');
-  const [sort, setSort] = useState('newest');
+  const [category, setCategory] = useState("");
+  const [sort, setSort] = useState("newest");
 
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState(null);
@@ -25,7 +30,7 @@ const BooksPage = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, category, sort]);
+  }, [debouncedSearch, category, status, minFee, maxFee, sort]);
 
   useEffect(() => {
     fetchCategories();
@@ -42,12 +47,12 @@ const BooksPage = () => {
 
   useEffect(() => {
     fetchBooks();
-  }, [debouncedSearch, category, sort, page]);
+  }, [debouncedSearch, category, status, minFee, maxFee, sort, page]);
 
   const fetchCategories = async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/category`
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/category`,
       );
 
       const data = await res.json();
@@ -67,25 +72,34 @@ const BooksPage = () => {
       const params = new URLSearchParams();
 
       if (debouncedSearch) {
-        params.append(
-          'search',
-          debouncedSearch
-        );
+        params.append("search", debouncedSearch);
       }
 
       if (category) {
-        params.append('category', category);
+        params.append("category", category);
       }
 
       if (sort) {
-        params.append('sort', sort);
+        params.append("sort", sort);
+      }
+
+      if (status) {
+        params.append("status", status);
+      }
+
+      if (minFee) {
+        params.append("minFee", minFee);
+      }
+
+      if (maxFee) {
+        params.append("maxFee", maxFee);
       }
 
       params.append("page", page);
       params.append("limit", limit);
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/book?${params}`
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/book?${params}`,
       );
 
       const data = await res.json();
@@ -123,115 +137,158 @@ const BooksPage = () => {
             </h1>
 
             <p className="mt-4 max-w-3xl text-lg text-slate-600">
-              Browse books across categories,
-              discover new authors, and find
+              Browse books across categories, discover new authors, and find
               your next favorite read.
             </p>
 
             {/* Filters */}
-            <div className="mt-10 grid gap-4 lg:grid-cols-[1fr_220px_220px]">
+            <div className="mt-10">
               {/* Search */}
               <div className="relative">
-                <Search
-                  size={20}
-                  className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"
-                />
+                <Search size={20} className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" />
 
                 <input
                   type="text"
                   placeholder="Search books or authors..."
                   value={search}
-                  onChange={(e) =>
-                    setSearch(e.target.value)
-                  }
-                  className="
-                    h-10
-                    w-full
-                    rounded-xl
-                    border
-                    border-gray-200
-                    bg-white
-                    pl-14
-                    pr-4
-                    outline-none
-                    transition-all
-                    focus:border-[#ef0161]
-                    focus:ring-4
-                    focus:ring-[#ef0161]/10
-                  "
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="h-10 w-full rounded-xl border border-gray-200 bg-white pl-14 pr-4 outline-none transition-all focus:border-[#ef0161] focus:ring-1 focus:ring-[#ef0161]/10"
                 />
               </div>
 
-              {/* Category */}
-              <select
-                value={category}
-                onChange={(e) =>
-                  setCategory(e.target.value)
-                }
-                className="
-                  h-10
-                  rounded-xl
-                  border
-                  border-gray-200
-                  bg-white
-                  px-5
-                  outline-none
-                  transition-all
-                  focus:border-[#ef0161]
-                  focus:ring-4
-                  focus:ring-[#ef0161]/10
-                "
-              >
-                <option value="">
-                  All Categories
-                </option>
+              <div className="mt-5 grid gap-4 lg:grid-cols-4">
+                {/* Category */}
+                <Select
+                  selectedKeys={category ? [category] : new Set()}
+                  onChange={(value) => {
+                    setCategory(String(value));
+                  }}
+                >
+                  <Select.Trigger>
+                    <Select.Value>
+                      {category
+                        ? categories.find((c) => c._id === category)?.name
+                        : "All Categories"}
+                    </Select.Value>
+                    <Select.Indicator />
+                  </Select.Trigger>
 
-                {categories.map((cat) => (
-                  <option
-                    key={cat._id}
-                    value={cat._id}
-                  >
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
+                  <Select.Popover className="rounded-xl">
+                    <ListBox>
+                      {categories.map((cat) => (
+                        <ListBox.Item className="hover:rounded-xl hover:bg-[#ef0161] hover:text-white"
+                          key={cat._id}
+                          id={cat._id}
+                          textValue={cat.name}
+                        >
+                          {cat.name}
+                        </ListBox.Item>
+                      ))}
+                    </ListBox>
+                  </Select.Popover>
+                </Select>
 
-              {/* Sort */}
-              <select
-                value={sort}
-                onChange={(e) =>
-                  setSort(e.target.value)
-                }
-                className="
-                  h-10
-                  rounded-xl
-                  border
-                  border-gray-200
-                  bg-white
-                  px-5
-                  outline-none
-                  transition-all
-                  focus:border-[#ef0161]
-                  focus:ring-4
-                  focus:ring-[#ef0161]/10
-                "
-              >
-                <option value="newest">
-                  Newest Books
-                </option>
+                {/* Sort */}
+                <Select
+                  selectedKeys={[sort]}
+                  onChange={(value) => setSort(String(value))}
+                >
+                  <Select.Trigger className="h-10 rounded-xl border border-gray-200 bg-white px-5 outline-none transition-all focus:border-[#ef0161] focus:ring-1 focus:ring-[#ef0161]/10">
+                    <Select.Value>Sort By</Select.Value>
+                    <Select.Indicator />
+                  </Select.Trigger>
 
-                <option value="oldest">
-                  Oldest Books
-                </option>
+                  <Select.Popover className="rounded-xl">
+                    <ListBox>
+                      <ListBox.Item className="hover:rounded-xl hover:bg-[#ef0161] hover:text-white" id="newest" textValue="Newest Books">
+                        Newest Books
+                      </ListBox.Item>
 
-                <option value="fee-low">
-                  Lowest Delivery Fee
-                </option>
+                      <ListBox.Item className="hover:rounded-xl hover:bg-[#ef0161] hover:text-white" id="oldest" textValue="Oldest Books">
+                        Oldest Books
+                      </ListBox.Item>
 
-                <option value="fee-high">
-                  Highest Delivery Fee
-                </option>
-              </select>
+                      <ListBox.Item className="hover:rounded-xl hover:bg-[#ef0161] hover:text-white" id="fee-low" textValue="Lowest Delivery Fee">
+                        Lowest Delivery Fee
+                      </ListBox.Item>
+
+                      <ListBox.Item className="hover:rounded-xl hover:bg-[#ef0161] hover:text-white" id="fee-high" textValue="Highest Delivery Fee">
+                        Highest Delivery Fee
+                      </ListBox.Item>
+                    </ListBox>
+                  </Select.Popover>
+                </Select>
+
+                {/* avaiability */}
+                <Select
+                  selectedKeys={status ? [status] : []}
+                  onChange={(value) => setStatus(String(value))}
+                >
+                  <Select.Trigger className="h-10 rounded-xl border border-gray-200 bg-white px-5 outline-none transition-all focus:border-[#ef0161] focus:ring-1 focus:ring-[#ef0161]/10">
+                    <Select.Value>All Status</Select.Value>
+                    <Select.Indicator />
+                  </Select.Trigger>
+
+                  <Select.Popover className="rounded-xl">
+                    <ListBox>
+                      <ListBox.Item className="hover:rounded-xl hover:bg-[#ef0161] hover:text-white" id="Available" textValue="Available">
+                        Available
+                      </ListBox.Item>
+
+                      <ListBox.Item className="hover:rounded-xl hover:bg-[#ef0161] hover:text-white" id="Checked Out" textValue="Checked Out">
+                        Checked Out
+                      </ListBox.Item>
+                    </ListBox>
+                  </Select.Popover>
+                </Select>
+
+                {/* fee */}
+                <Select
+                  onChange={(value) => {
+                    switch (String(value)) {
+                      case "0-5":
+                        setMinFee(0);
+                        setMaxFee(5);
+                        break;
+
+                      case "5-10":
+                        setMinFee(5);
+                        setMaxFee(10);
+                        break;
+
+                      case "10-15":
+                        setMinFee(10);
+                        setMaxFee(15);
+                        break;
+
+                      default:
+                        setMinFee("");
+                        setMaxFee("");
+                    }
+                  }}
+                >
+                  <Select.Trigger className="h-10 rounded-xl border border-gray-200 bg-white px-5 outline-none transition-all focus:border-[#ef0161] focus:ring-1 focus:ring-[#ef0161]/10">
+                    <Select.Value>All Fees</Select.Value>
+                    <Select.Indicator />
+                  </Select.Trigger>
+
+                  <Select.Popover className="rounded-xl">
+                    <ListBox>
+                      <ListBox.Item className="hover:rounded-xl hover:bg-[#ef0161] hover:text-white" id="0-5" textValue="$0 - $5">
+                        $0 - $5
+                      </ListBox.Item>
+
+                      <ListBox.Item className="hover:rounded-xl hover:bg-[#ef0161] hover:text-white" id="5-10" textValue="$5 - $10">
+                        $5 - $10
+                      </ListBox.Item>
+
+                      <ListBox.Item className="hover:rounded-xl hover:bg-[#ef0161] hover:text-white" id="10-15" textValue="$10 - $15">
+                        $10 - $15
+                      </ListBox.Item>
+                    </ListBox>
+                  </Select.Popover>
+                </Select>
+              </div>
             </div>
           </div>
         </div>
@@ -241,26 +298,19 @@ const BooksPage = () => {
       {loading ? (
         <Loading />
       ) : books.length === 0 ? (
-        <div className='max-w-7xl mx-auto mt-10'>
+        <div className="max-w-7xl mx-auto mt-10">
           <NoData />
         </div>
       ) : (
         <div className="mt-10 max-w-7xl mx-auto px-5 lg:px-0 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {books.map((book) => (
-            <Book
-              key={book._id}
-              book={book}
-            />
+            <Book key={book._id} book={book} />
           ))}
         </div>
       )}
 
       {pagination && pagination.totalPages > 1 && (
-        <Pagination
-          pagination={pagination}
-          page={page}
-          setPage={setPage}
-        />
+        <Pagination pagination={pagination} page={page} setPage={setPage} />
       )}
     </section>
   );
