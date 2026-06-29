@@ -218,7 +218,9 @@ const BooksPage = () => {
                                 books.map((item) => (
                                     <Table.Row key={item._id}>
                                         <Table.Cell>
-                                            {item.title}
+                                            <Link href={`/books/${item._id}`}>
+                                                {item.title}
+                                            </Link>
                                         </Table.Cell>
 
                                         <Table.Cell>

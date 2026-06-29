@@ -71,9 +71,7 @@ const ReviewList = ({
             );
           })
         ) : (
-          <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-slate-400">
-            <NoData />
-          </div>
+          <NoData />
         )}
       </div>
     </section>

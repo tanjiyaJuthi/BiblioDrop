@@ -123,30 +123,22 @@ NEXT_PUBLIC_IMBB_KEY=your_imbb_api_key
 
 ### Frontend
 
-- React
-- React Router DOM
+- NextJs
 - Tailwind CSS
-- DaisyUI
+- Better Auth
+- HeroUI
 - Framer Motion
-- Axios
-- TanStack React Query
-- React Hook Form
 - Recharts
 - React Hot Toast
-- SweetAlert2
 - React Icons
-- Stripe React SDK
+- Stripe
 
 ### Backend
 
-- Node.js
 - Express.js
 - MongoDB Atlas
+- Mongoose
 - JWT
-- Better Auth
-- Cookie Parser
-- CORS
-- dotenv
 - Stripe API
 
 ---
@@ -171,7 +163,10 @@ NEXT_PUBLIC_IMBB_KEY=your_imbb_api_key
 - cors
 - dotenv
 - stripe
-- better-auth
+- cors
+- dotenv
+- nodemon
+- jose
 
 ---
 
@@ -180,7 +175,7 @@ NEXT_PUBLIC_IMBB_KEY=your_imbb_api_key
 - Environment variables for sensitive credentials
 - JWT authentication
 - Protected API routes
-- Cookie-based authorization
+- Session-based authorization
 - MongoDB credentials secured
 - Better Auth session management
 - Stripe secure payment gateway
@@ -193,7 +188,7 @@ NEXT_PUBLIC_IMBB_KEY=your_imbb_api_key
 - Book Browsing
 - Delivery Requests
 - Stripe Payment
-- Book Approval Workflow
+- Book & Delivery Approval Workflow
 - Inventory Management
 - Verified Reviews
 - Transaction Management

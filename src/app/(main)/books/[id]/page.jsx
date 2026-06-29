@@ -17,8 +17,11 @@ import { Button } from '@heroui/react';
 import ReviewForm from '@/components/ReviewForm';
 import ReviewList from '@/components/ReviewList';
 import Rating from '@/components/Rating';
+import { useRouter } from 'next/navigation';
 
 const BookDetailPage = () => {
+  const router = useRouter();
+
   const { data: session } = useSession();
   const user = session?.user;
 
@@ -145,11 +148,21 @@ const BookDetailPage = () => {
   if (loading) return <Loading />;
   if (!book) return <div className="max-w-7xl mx-auto my-20"><NoData /></div>;
   
-  const isOwner = user?._id === book?.librarianId?._id;
+  const isOwner =
+    !!user &&
+    !!user._id &&
+    !!book?.librarianId?._id &&
+    user._id === book.librarianId._id;
+    
   const isUnavailable = !book?.isAvailable;
 
   const handleTransaction = async () => {
     if (isUnavailable) return;
+
+    if (!user) {
+      router.push(`/signin?redirect=/books/${book._id}`);
+      return;
+    }
 
     try {
       const { data: tokenData } = await authClient.token();

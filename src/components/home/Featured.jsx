@@ -8,6 +8,7 @@ import Book from '../Book';
 
 import 'swiper/css';
 import Link from 'next/link';
+import Loading from '@/app/loading';
 
 const Featured = () => {
     const [books, setBooks] = useState([]);
@@ -90,7 +91,7 @@ const Featured = () => {
         </div>
 
       {loading ? (
-        <div className="text-center py-10">Loading...</div>
+        <div className="text-center py-10"><Loading /></div>
       ) : (
         <Swiper
           modules={[Autoplay]}

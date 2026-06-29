@@ -5,7 +5,7 @@ import Book from '@/components/Book';
 import { Search } from 'lucide-react';
 import Loading from '@/app/loading';
 import NoData from '@/components/NoData';
-import { div } from 'framer-motion/client';
+import Pagination from '@/components/Pagination';
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -18,6 +18,14 @@ const BooksPage = () => {
 
   const [category, setCategory] = useState('');
   const [sort, setSort] = useState('newest');
+
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState(null);
+  const limit = 12;
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, category, sort]);
 
   useEffect(() => {
     fetchCategories();
@@ -34,7 +42,7 @@ const BooksPage = () => {
 
   useEffect(() => {
     fetchBooks();
-  }, [debouncedSearch, category, sort]);
+  }, [debouncedSearch, category, sort, page]);
 
   const fetchCategories = async () => {
     try {
@@ -73,6 +81,9 @@ const BooksPage = () => {
         params.append('sort', sort);
       }
 
+      params.append("page", page);
+      params.append("limit", limit);
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/book?${params}`
       );
@@ -81,6 +92,7 @@ const BooksPage = () => {
 
       if (data.success) {
         setBooks(data.data);
+        setPagination(data.pagination);
       }
     } catch (error) {
       console.error(error);
@@ -241,6 +253,14 @@ const BooksPage = () => {
             />
           ))}
         </div>
+      )}
+
+      {pagination && pagination.totalPages > 1 && (
+        <Pagination
+          pagination={pagination}
+          page={page}
+          setPage={setPage}
+        />
       )}
     </section>
   );
