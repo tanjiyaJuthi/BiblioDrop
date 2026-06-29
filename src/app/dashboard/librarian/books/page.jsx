@@ -22,9 +22,17 @@ import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import Pagination from "@/components/Pagination";
+import Loading from "@/app/loading";
 
 const BooksPage = () => {
     const router = useRouter();
+
+    const [page, setPage] = useState(1);
+    const [pagination, setPagination] = useState({
+        totalPages: 1,
+    });
+    const limit = 6;
     
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -35,8 +43,10 @@ const BooksPage = () => {
 
     const fetchBooks = async () => {
         try {
+            setLoading(true);
+
             const { data: tokenData } = await authClient.token();
-            const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/my-book`;
+            const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/my-book?page=${page}&limit=${limit}`;
 
             const res = await fetch(url, {
                 method: "GET",
@@ -50,6 +60,7 @@ const BooksPage = () => {
 
             if (res.ok) {
                 setBooks(data.data);
+                setPagination(data.pagination);
             }
         } catch (error) {
             console.log(error);
@@ -59,8 +70,8 @@ const BooksPage = () => {
     };
 
     useEffect(() => {
-        fetchBooks();
-    }, []);
+    fetchBooks();
+    }, [page]);
 
     const openDeleteModal = (book) => {
         setSelectedBook(book);
@@ -208,7 +219,7 @@ const BooksPage = () => {
                             {loading ? (
                                 <Table.Row>
                                     <Table.Cell colSpan={7}>
-                                        Loading...
+                                        <Loading />
                                     </Table.Cell>
                                 </Table.Row>
                             ) : books.length === 0 ? (
@@ -335,6 +346,14 @@ const BooksPage = () => {
                     </Table.Content>
                 </Table.ScrollContainer>
             </Table>
+
+            <div className="flex justify-center mt-6">
+                <Pagination
+                    page={page}
+                    setPage={setPage}
+                    pagination={pagination}
+                />
+            </div>
 
             <Modal
                 isOpen={deleteModalOpen}
