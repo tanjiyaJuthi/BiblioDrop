@@ -7,11 +7,12 @@ const Book = ({ book }) => {
     <div className="group h-full">
         <div className="overflow-hidden rounded-xl border border-[#ef0161]/5 shadow-sm transition-all duration-300 hover:-translate-y-2 flex flex-col">
             {/* Fixed Image Area */}
-            <div className="relative h-62 shrink-0 bg-[#fff8fb] overflow-hidden">
+            <div className="relative h-62 shrink-0 bg-[#fff8fb] overflow-hidden w-full">
                 <Image
-                    src={book.coverImage}
+                    src={book.coverImage || "/images/fallback.jpg"}
                     alt={book.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
