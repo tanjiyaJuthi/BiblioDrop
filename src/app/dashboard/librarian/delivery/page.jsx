@@ -5,6 +5,7 @@ import { Button, Card, Table } from "@heroui/react";
 import Image from "next/image";
 import { CheckCheck, Truck, Ban } from "lucide-react";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const DeliveryPage = () => {
     const [deliveries, setDeliveries] = useState([]);
@@ -27,7 +28,7 @@ const DeliveryPage = () => {
             );
             
             const data = await res.json();
-            console.log(data);
+            // console.log(data);
             if (data.success) {
                 setDeliveries(data.deliveries);
             }
@@ -60,6 +61,8 @@ const DeliveryPage = () => {
                 return;
             }
 
+            toast.success('Delivery Status Changed!');
+
             fetchDeliveries();
         } catch (err) {
             console.error(err);
@@ -87,6 +90,7 @@ const DeliveryPage = () => {
                 return;
             }
 
+            toast.success('Removed from delivery!');
             fetchDeliveries();
         } catch (error) {
             console.error(error);

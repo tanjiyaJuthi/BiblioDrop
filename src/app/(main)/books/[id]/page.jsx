@@ -143,9 +143,8 @@ const BookDetailPage = () => {
 
   const isOwner =
     !!user &&
-    !!user._id &&
     !!book?.librarianId?._id &&
-    user._id === book.librarianId._id;
+    String(user.id) === String(book.librarianId._id);
 
   const isUnavailable = !book?.isAvailable;
 
@@ -179,6 +178,8 @@ const BookDetailPage = () => {
 
       if (data.success) {
         window.location.href = data.url;
+
+        toast.success('Book has sent for delivery!');
       }
     } catch (error) {
       console.error(error);
@@ -320,23 +321,6 @@ const BookDetailPage = () => {
                     ? "Checked Out"
                     : `Request Delivery (৳${book.deliveryFee})`}
                 </Button>
-              )}
-
-              {isOwner && (
-                <div className="flex flex-wrap gap-3">
-                  <Link
-                    href={`/dashboard/books/edit/${book._id}`}
-                    className="flex items-center gap-2 rounded-xl bg-blue-50 px-5 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-100 transition-colors"
-                  >
-                    <Edit size={16} /> Edit
-                  </Link>
-                  <Button className="flex items-center gap-2 rounded-xl bg-red-50 px-5 py-2.5 text-sm font-medium text-red-600 hover:bg-red-100 transition-colors">
-                    <Trash2 size={16} /> Delete
-                  </Button>
-                  <Button className="flex items-center gap-2 rounded-xl bg-yellow-50 px-5 py-2.5 text-sm font-medium text-yellow-700 hover:bg-yellow-100 transition-colors">
-                    <EyeOff size={16} /> Unpublish
-                  </Button>
-                </div>
               )}
             </div>
           </div>

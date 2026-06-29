@@ -21,6 +21,7 @@ import { authClient } from "@/lib/auth-client";
 import { imbb } from "@/lib/helper/image uploader/imbb";
 import { Check, Upload } from "lucide-react";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 const BooksAddPage = () => {
   const router = useRouter();
@@ -117,6 +118,7 @@ const BooksAddPage = () => {
         throw new Error(data.message || "Something went wrong");
       }
 
+      toast.success("Book has been added sucessfully!");
       router.push("/dashboard/librarian/books");
     } catch (error) {
       console.error(error);

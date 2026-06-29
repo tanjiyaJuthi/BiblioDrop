@@ -79,6 +79,8 @@ export default function SignupPage() {
         setConfirmPassword("");
         setImage("");
 
+        toast.success("Signedup successfull!");
+
         router.push("/choose-role");
       }
     } catch (err) {

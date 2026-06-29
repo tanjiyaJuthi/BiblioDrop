@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 import { MdDashboard } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { BiLogOut } from "react-icons/bi";
+import toast from "react-hot-toast";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -21,6 +22,8 @@ export default function Navbar() {
 
   const handleSignOut = async () => {
     await signOut();
+
+    toast.success("SignedOut Sccessfull!");
   }
 
   const navLinks = [

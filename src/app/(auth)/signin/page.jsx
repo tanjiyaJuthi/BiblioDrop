@@ -8,6 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import { LayoutGrid } from "lucide-react";
 import { useGoogleAuth } from "@/lib/helper/utils-client";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 export default function SigninPage() {
     // Form fields
@@ -41,6 +42,8 @@ export default function SigninPage() {
             if (authError) {
                 setError(authError.message || "Invalid email or password.");
             } else {
+                toast.success("Signed in successfully!");
+
                 setSuccess("Signed in successfully! Redirecting...");
                 setEmail("");
                 setPassword("");

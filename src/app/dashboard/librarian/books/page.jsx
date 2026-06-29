@@ -21,6 +21,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 const BooksPage = () => {
     const router = useRouter();
@@ -93,6 +94,8 @@ const BooksPage = () => {
 
                 setDeleteModalOpen(false);
                 setSelectedBook(null);
+
+                toast.success("Book has been deleted sucessfully!");
             }
 
         } catch(error) {
