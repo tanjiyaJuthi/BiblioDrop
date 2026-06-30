@@ -2,18 +2,22 @@
 
 import { useState } from "react";
 import { authClient } from "../auth-client";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export const useGoogleAuth = () => {
+  const router = useRouter();
+
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleGoogleAuth = async () => {
     setGoogleLoading(true);
 
     try {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: `/choose-role`,
-      });
+        await authClient.signIn.social({
+          provider: "google",
+          callbackURL: "/auth/callback",
+        });
     } catch (error) {
       console.error(error);
     } finally {

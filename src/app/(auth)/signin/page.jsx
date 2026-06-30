@@ -36,12 +36,14 @@ export default function SigninPage() {
             const { data, error: authError } = await signIn.email({
                 email,
                 password,
-                callbackURL: "/" 
+                callbackURL: "/auth/callback",
             });
 
             if (authError) {
                 setError(authError.message || "Invalid email or password.");
-            } else {
+
+                return;
+            } else {    
                 toast.success("Signed in successfully!");
 
                 setSuccess("Signed in successfully! Redirecting...");

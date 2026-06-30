@@ -68,6 +68,8 @@ export default function SignupPage() {
         callbackURL: "/choose-role",
       });
 
+      console.log(data);
+
       if (authError) {
         setError(authError.message || "Something went wrong during signup.");
       } else {
