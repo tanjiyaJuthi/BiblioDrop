@@ -9,9 +9,17 @@ import { Check, Eye, EyeOff, Trash2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { CgDetailsMore } from "react-icons/cg";
+import Loading from "@/app/loading";
+import Pagination from "@/components/Pagination";
 
 const BooksPage = () => {
   const router = useRouter();
+
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    totalPages: 1,
+  });
+  const limit = 10;
 
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,9 +31,10 @@ const BooksPage = () => {
   const fetchBooks = async () => {
     try {
       const { data: tokenData } = await authClient.token();
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/dashboard?page=${page}&limit=${limit}`;
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/book/dashboard`,
+        url,
         {
           headers: {
             Authorization: `Bearer ${tokenData?.token}`,
@@ -37,6 +46,7 @@ const BooksPage = () => {
 
       if (res.ok) {
         setBooks(data.data);
+        setPagination(data.pagination);
       }
     } catch (error) {
       console.log(error);
@@ -47,7 +57,7 @@ const BooksPage = () => {
 
   useEffect(() => {
     fetchBooks();
-  }, []);
+  }, [page]);
 
   const approveBook = async (id) => {
     try {
@@ -226,7 +236,9 @@ const BooksPage = () => {
             <Table.Body>
               {loading ? (
                 <Table.Row>
-                  <Table.Cell colSpan={4}>Loading...</Table.Cell>
+                  <Table.Cell colSpan={4}>
+                    <Loading />
+                  </Table.Cell>
                 </Table.Row>
               ) : books.length === 0 ? (
                 <Table.Row>
@@ -366,6 +378,14 @@ const BooksPage = () => {
           </Modal.Container>
         </Modal.Backdrop>
       </Modal>
+
+      <div className="flex justify-center mt-6">
+        <Pagination
+          page={page}
+          setPage={setPage}
+          pagination={pagination}
+        />
+      </div>
     </Card>
   );
 };

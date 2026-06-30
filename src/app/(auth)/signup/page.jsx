@@ -127,8 +127,8 @@ export default function SignupPage() {
               <Image
                 src="/images/lexi-cart.png"
                 alt="Lexi Cart"
-                width={250}
-                height={250}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-contain"
               />
             </Link>

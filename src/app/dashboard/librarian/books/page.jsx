@@ -32,7 +32,7 @@ const BooksPage = () => {
     const [pagination, setPagination] = useState({
         totalPages: 1,
     });
-    const limit = 6;
+    const limit = 10;
     
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
