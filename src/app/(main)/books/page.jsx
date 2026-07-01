@@ -6,7 +6,7 @@ import NoData from "@/components/NoData";
 import Pagination from "@/components/Pagination";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Label, ListBox, Select } from "@heroui/react";
+import { ListBox, Select } from "@heroui/react";
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);

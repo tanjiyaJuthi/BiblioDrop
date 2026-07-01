@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
+import Loading from "@/app/loading";
 
 
 const RolesPage = () => {
@@ -137,7 +138,7 @@ const RolesPage = () => {
                             {loading ? (
                                 <Table.Row>
                                     <Table.Cell colSpan={3}>
-                                        Loading...
+                                        <Loading />
                                     </Table.Cell>
                                 </Table.Row>
                             ) : roles.length === 0 ? (

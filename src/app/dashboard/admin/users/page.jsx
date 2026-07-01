@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
+import Loading from "@/app/loading";
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
@@ -189,7 +190,7 @@ const UsersPage = () => {
                             {loading ? (
                                 <Table.Row>
                                     <Table.Cell colSpan={4}>
-                                        Loading users...
+                                        <Loading />
                                     </Table.Cell>
                                 </Table.Row>
                             ) : users.length === 0 ? (

@@ -49,7 +49,7 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-50">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-0">
         <Link href="/" className="flex items-center gap-3">
-            <Image src={lexiCart} width={200} height={200} alt="BibliDrop"/>
+            <Image src={lexiCart} width={200} height={200} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" alt="BibliDrop"/>
         </Link>
 
         <div className="flex items-center gap-4">
