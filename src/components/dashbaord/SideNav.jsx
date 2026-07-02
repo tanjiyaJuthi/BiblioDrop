@@ -88,8 +88,15 @@ const SideNav = ({
       <div className="h-16 flex items-center justify-between px-4 shadow-xs">
         {!collapsed && (
           <Link href="/" className="flex items-center gap-3">
-            <Image src={lexiCart} width={100} height={100} alt="LexiCart"/>
-        </Link>
+            <Image
+              src={lexiCart}
+              alt="LexiCart"
+              width={100}
+              height={100}
+              className="h-auto"
+              priority
+            />
+          </Link>
         )}
         <Button
           isIconOnly

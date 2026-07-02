@@ -38,7 +38,7 @@ const WishListPage = () => {
         fetchWishlist();
     }, []);
 
-    if (loading) return <p><Loading /></p>;
+    if (loading) return <Loading />;
 
     return (
         <div className="grid gap-6 lg:grid-cols-4">

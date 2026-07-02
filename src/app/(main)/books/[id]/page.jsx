@@ -13,6 +13,7 @@ import ReviewList from "@/components/ReviewList";
 import { authClient, useSession } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const BookDetailPage = () => {
   const router = useRouter();
@@ -318,7 +319,7 @@ const BookDetailPage = () => {
                   }`}
                 >
                   {isUnavailable
-                    ? "Checked Out"
+                    ? "Unavailable"
                     : `Request Delivery (৳${book.deliveryFee})`}
                 </Button>
               )}
