@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { authClient } from "../auth-client";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 
 export const useGoogleAuth = () => {
   const router = useRouter();

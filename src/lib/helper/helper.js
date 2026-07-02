@@ -29,3 +29,6 @@ export const handleSelect = (setter) => (key) => (keys) => {
   const value = Array.from(keys)[0];
   setter(key, value);
 };
+
+export const capitalizeWords = (str) =>
+    str.replace(/\b\w/g, (char) => char.toUpperCase());
