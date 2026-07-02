@@ -17,7 +17,6 @@ const COLORS = [
 ];
 
 const RequestStatusChart = ({ data }) => {
-
     const chartData = data.map((item, index) => ({
         name: item._id,
         value: item.value,
